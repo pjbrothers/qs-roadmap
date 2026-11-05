@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027 Data and Engineering Delivery Plan</title>
+<script src="data/plan.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="palette.css" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:var(--qs-page); }
+  * { box-sizing:border-box; }
+  a { color:var(--qs-blue); text-decoration:none; }
+  a:hover { color:var(--qs-ink); }
+  .board::-webkit-scrollbar { height:12px; }
+  .board::-webkit-scrollbar-track { background:var(--qs-150); border-radius:999px; }
+  .board::-webkit-scrollbar-thumb { background:var(--qs-400); border-radius:999px; }
+</style>
+</helmet>
+
+<div style="font-family:'PP Telegraf','Manrope',system-ui,sans-serif; background:#F2F5F6; color:#1A272E; padding:34px 40px 46px; min-height:100vh;">
+
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:32px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <img src="uploads/qs-logo.png" alt="QS" style="width:46px; height:46px; object-fit:contain;">
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:2.4px; text-transform:uppercase; color:var(--qs-600);">{{ weekLabel }}</div>
+        <div style="font-size:31px; font-weight:800; letter-spacing:-0.6px; line-height:1.1; margin-top:4px;">2027 Data and Engineering Delivery Plan</div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;">
+          <a data-download-gantt href="qs-roadmap-gantt.pdf" download="QS 2027 Data and Engineering Delivery Plan gantt A3.pdf" title="Gantt only, A3 landscape, built with npm run build:gantt" style="display:flex; align-items:center; gap:8px; background:#fff; color:var(--qs-ink); border:1.5px solid var(--qs-250); border-radius:999px; padding:7px 15px; font-size:12px; font-weight:800; transition:all .14s;" style-hover="border-color:var(--qs-ink);">
+            <span style="font-size:13px;">↓</span>Gantt A3
+          </a>
+                  <a data-download href="qs-roadmap-report.pdf" download="QS 2027 Data and Engineering Delivery Plan report.pdf" title="PDF report, built with npm run build" style="display:flex; align-items:center; gap:8px; background:var(--qs-ink); color:#fff; border-radius:999px; padding:8px 16px; font-size:12px; font-weight:800; transition:opacity .14s;" style-hover="opacity:0.86;">
+            <span style="font-size:13px; line-height:1;">↓</span>Download report
+          </a>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+        <div data-page-switch style="display:flex; gap:4px; background:#fff; border-radius:999px; padding:4px;">
+          <span style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:800; background:var(--qs-ink); color:#fff;">Delivery Plan</span>
+          <a href="weekly.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Reports</a>
+          <a href="teams.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Teams</a>
+          <a href="people.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">People</a>
+          <a href="transformation.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Transformation</a>
+          <a href="architecture.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Architecture</a>
+                <a href="data.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Data</a>
+</div>
+
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+        <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+          <div style="display:flex; align-items:center; gap:8px; background:#fff; border-radius:999px; padding:8px 15px; font-size:12px; font-weight:700; color:var(--qs-600);">
+            <span style="width:10px; height:10px; border-radius:3px; background:{{ l.bg }}; box-shadow:inset 0 0 0 1px {{ l.ring }};"></span>{{ l.label }}
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex; gap:26px; align-items:center; flex-wrap:wrap; margin-top:26px; padding:14px 18px; background:#fff; border-radius:16px;">
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">View</div>
+      <div style="display:flex; gap:4px; background:#F2F5F6; border-radius:999px; padding:4px;">
+        <sc-for list="{{ viewChips }}" as="v" hint-placeholder-count="3">
+          <div data-view-chip="{{ v.label }}" onClick="{{ v.pick }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; background:{{ v.bg }}; color:{{ v.fg }}; transition:all .14s;">{{ v.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <sc-if value="{{ isGantt }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Sort</div>
+      <div style="display:flex; gap:4px; background:#F2F5F6; border-radius:999px; padding:4px;">
+        <sc-for list="{{ ganttSortChips }}" as="o" hint-placeholder-count="2">
+          <div data-gantt-sort="{{ o.label }}" onClick="{{ o.pick }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:6px 13px; font-size:12px; font-weight:700; background:{{ o.bg }}; color:{{ o.fg }}; transition:all .14s;">{{ o.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Group by</div>
+      <div style="display:flex; gap:4px; background:#F2F5F6; border-radius:999px; padding:4px;">
+        <sc-for list="{{ ganttGroupChips }}" as="g" hint-placeholder-count="5">
+          <div data-gantt-group="{{ g.label }}" onClick="{{ g.pick }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:6px 13px; font-size:12px; font-weight:700; background:{{ g.bg }}; color:{{ g.fg }}; transition:all .14s;">{{ g.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Portfolio</div>
+      <div style="display:flex; gap:7px; flex-wrap:wrap;">
+        <sc-for list="{{ groupChips }}" as="c" hint-placeholder-count="5">
+          <div data-portfolio-chip="{{ c.label }}" data-on="{{ c.onFlag }}" onClick="{{ c.toggle }}" style="cursor:pointer; user-select:none; display:flex; align-items:center; gap:7px; border-radius:999px; padding:7px 14px; font-size:12px; font-weight:700; background:{{ c.bg }}; color:{{ c.fg }}; border:1.5px solid {{ c.border }}; transition:all .14s;" style-hover="opacity:0.86;">
+            <span style="width:9px; height:9px; border-radius:3px; background:{{ c.dot }};"></span>{{ c.label }}
+            <span style="font-size:11px; font-weight:800; opacity:0.6;">{{ c.count }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Stack</div>
+      <div style="display:flex; gap:4px; background:#F2F5F6; border-radius:999px; padding:4px;">
+        <sc-for list="{{ stackChips }}" as="s" hint-placeholder-count="4">
+          <div data-stack-chip="{{ s.label }}" onClick="{{ s.pick }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; background:{{ s.bg }}; color:{{ s.fg }}; transition:all .14s;">{{ s.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div data-hide-released="{{ hideReleasedFlag }}" onClick="{{ toggleReleased }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:7px 15px; font-size:12px; font-weight:700; background:{{ hideBg }}; color:{{ hideFg }}; border:1.5px solid {{ hideBorder }}; transition:all .14s;" style-hover="opacity:0.86;">Hide Released</div>
+    <div style="margin-left:auto; font-size:12px; font-weight:700; color:var(--qs-600);">{{ shownLabel }}</div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+  <div data-detail-bar style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:26px; padding:14px 18px; background:#fff; border-radius:16px;">
+    <div data-back onClick="{{ closeDetail }}" title="Back (Esc)" style="cursor:pointer; user-select:none; display:flex; align-items:center; gap:7px; border-radius:999px; padding:7px 15px; font-size:12px; font-weight:800; background:#F2F5F6; color:var(--qs-ink); transition:all .14s;" style-hover="background:var(--qs-150);">← {{ backLabel }}</div>
+    <div style="display:flex; align-items:center; gap:10px; min-width:0;">
+      <span style="flex:0 0 auto; width:10px; height:10px; border-radius:3px; background:{{ detailColor }};"></span>
+      <div style="font-size:16px; font-weight:800;">{{ detailName }}</div>
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--qs-550);">{{ detailMeta }}</div>
+    </div>
+    <div style="margin-left:auto; font-size:12px; font-weight:700; color:var(--qs-600);">{{ detailCount }}</div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showColumns }}" hint-placeholder-val="{{ false }}">
+  <div class="board" style="margin-top:20px; overflow-x:auto; overflow-y:hidden; padding-bottom:16px;">
+    <div data-view="columns" style="display:flex; align-items:{{ colAlign }}; gap:10px; min-width:{{ colMinWidth }};">
+
+      <div data-labels style="flex:0 0 auto; width:176px; position:sticky; left:0; z-index:5; background:#F2F5F6; padding-right:8px;">
+        <div style="height:82px;"></div>
+        <sc-for list="{{ rowLabels }}" as="r" hint-placeholder-count="7">
+          <div style="height:{{ r.h }}px; display:flex; align-items:center; justify-content:flex-end; text-align:right; font-size:11px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:var(--qs-600); border-top:1px solid var(--qs-150); padding:0 4px;">{{ r.label }}</div>
+        </sc-for>
+      </div>
+
+      <sc-for list="{{ columnCards }}" as="p" hint-placeholder-count="8">
+        <div data-card onClick="{{ p.open }}" style="cursor:pointer; flex:0 0 auto; width:242px; background:#fff; border-radius:16px; padding:0 0 4px; transition:transform .15s, box-shadow .15s; box-shadow:0 1px 2px rgba(26,39,46,0.06);" style-hover="transform:translateY(-4px); box-shadow:0 14px 34px rgba(26,39,46,0.16);">
+
+          <div style="height:82px; border-radius:16px 16px 0 0; background:{{ p.headerBg }}; padding:13px 15px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="font-size:15.5px; font-weight:800; color:var(--qs-ink-on-fill); line-height:1.2; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">{{ p.name }}</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+              <div style="font-size:10px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--qs-ink-on-fill);">{{ p.laneLabel }}</div>
+              <sc-if value="{{ p.isPlaceholder }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:0 0 auto; font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--qs-ink-on-fill); background:rgba(255,255,255,0.7); border-radius:999px; padding:3px 8px;">Placeholder</div>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="height:40px; display:flex; align-items:center; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="font-size:11px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; border-radius:999px; padding:4px 11px; background:{{ p.stackBg }}; color:{{ p.stackFg }}; border:1px solid {{ p.stackBorder }};">{{ p.stack }}</div>
+          </div>
+
+          <div style="height:46px; display:flex; align-items:center; gap:8px; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="width:23px; height:23px; border-radius:999px; background:{{ p.leaderBg }}; color:{{ p.leaderFg }}; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.leaderInitials }}</div>
+            <div style="font-size:12.5px; font-weight:700; color:#1A272E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.leader }}</div>
+          </div>
+
+          <div style="height:46px; display:flex; align-items:center; gap:8px; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="width:23px; height:23px; border-radius:999px; background:var(--qs-600); color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.dataInitials }}</div>
+            <div style="font-size:12.5px; font-weight:700; color:#1A272E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.dataLead }}</div>
+          </div>
+
+          <div style="height:46px; display:flex; align-items:center; gap:8px; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="width:23px; height:23px; border-radius:999px; background:var(--qs-650); color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.engInitials }}</div>
+            <div style="font-size:12.5px; font-weight:700; color:#1A272E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.engLead }}</div>
+          </div>
+
+          <div style="height:84px; display:flex; align-items:center; padding:0 15px; border-top:1px solid var(--qs-150); overflow:hidden;">
+            <div title="{{ p.desc }}" style="font-size:11.5px; font-weight:600; line-height:1.45; color:var(--qs-650); text-wrap:pretty; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden;">{{ p.desc }}</div>
+          </div>
+
+          <div style="height:58px; display:flex; flex-direction:column; justify-content:center; gap:6px; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="display:flex; flex-wrap:wrap; gap:4px;">
+              <sc-for list="{{ p.epicChips }}" as="e" hint-placeholder-count="1">
+                <div style="font-size:10px; font-weight:800; letter-spacing:0.5px; color:var(--qs-650); background:#F2F5F6; border-radius:999px; padding:3px 7px; white-space:nowrap;">{{ e.label }}</div>
+              </sc-for>
+            </div>
+            <div style="font-size:10.5px; font-weight:700; color:var(--qs-550); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.productLabel }}</div>
+          </div>
+
+          <div style="height:58px; display:flex; flex-direction:column; justify-content:center; gap:7px; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="display:flex; gap:2px;">
+              <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="15">
+                <div style="flex:1 1 0; height:9px; border-radius:2px; background:{{ m.bg }};"></div>
+              </sc-for>
+            </div>
+            <div style="font-size:10.5px; font-weight:700; color:var(--qs-550); letter-spacing:0.3px;">{{ p.discoveryLabel }}</div>
+            <sc-if value="{{ p.maintLabel }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; color:var(--qs-600);"><span style="flex:0 0 auto; width:12px; height:8px; border-radius:2px; background:{{ p.maintTint }};"></span>{{ p.maintLabel }}</div>
+            </sc-if>
+          </div>
+
+          <sc-for list="{{ p.tracks }}" as="t" hint-placeholder-count="3">
+            <div style="height:48px; display:flex; flex-direction:column; justify-content:center; gap:6px; padding:0 15px; border-top:1px solid var(--qs-150);">
+              <div style="display:flex; gap:3px;">
+                <sc-for list="{{ t.segs }}" as="s" hint-placeholder-count="4">
+                  <div style="flex:1 1 0; height:8px; border-radius:999px; background:{{ s.bg }};"></div>
+                </sc-for>
+              </div>
+              <div style="font-size:10.5px; font-weight:700; color:var(--qs-600);">{{ t.label }}</div>
+            </div>
+          </sc-for>
+
+          <div style="height:48px; display:flex; align-items:center; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="font-size:11px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; border-radius:999px; padding:5px 11px; background:{{ p.protoBg }}; color:{{ p.protoFg }};">{{ p.proto }}</div>
+          </div>
+
+          <div style="height:48px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 15px; border-top:1px solid var(--qs-150);">
+            <div style="font-size:12.5px; font-weight:800; color:#1A272E;">{{ p.review }}</div>
+            <div style="font-size:10px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--qs-550);">{{ p.reviewNote }}</div>
+          </div>
+
+          <div style="height:96px; display:flex; flex-direction:column; justify-content:center; gap:7px; padding:0 15px; border-top:1px solid var(--qs-150); overflow:hidden;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+              <div style="display:flex; gap:3px; flex:1 1 auto;">
+                <sc-for list="{{ p.riskSegs }}" as="s" hint-placeholder-count="4">
+                  <div style="flex:1 1 0; height:8px; border-radius:999px; background:{{ s.bg }};"></div>
+                </sc-for>
+              </div>
+              <div style="flex:0 0 auto; font-size:9.5px; font-weight:800; letter-spacing:0.9px; text-transform:uppercase; color:{{ p.riskFg }};">{{ p.riskLabel }}</div>
+            </div>
+            <div title="{{ p.riskText }}" style="font-size:11.5px; font-weight:600; line-height:1.4; color:var(--qs-650); text-wrap:pretty; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">{{ p.riskText }}</div>
+          </div>
+
+          <div style="height:132px; display:flex; flex-direction:column; gap:9px; padding:13px 15px 0; border-top:1px solid var(--qs-150); overflow:hidden;">
+            <sc-for list="{{ p.notes }}" as="n" hint-placeholder-count="3">
+              <div>
+                <div style="font-size:9.5px; font-weight:800; letter-spacing:1.1px; text-transform:uppercase; color:var(--qs-600);">{{ n.head }}</div>
+                <div style="font-size:11.5px; font-weight:600; line-height:1.4; color:var(--qs-650); margin-top:3px; text-wrap:pretty;">{{ n.body }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <div data-updates style="flex:1 1 480px; min-width:360px; max-width:900px; background:#fff; border-radius:16px; padding:4px 24px 12px; box-shadow:0 1px 2px rgba(26,39,46,0.06);">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:14px 0 12px;">
+            <div style="font-size:11px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Weekly updates</div>
+            <div style="font-size:11px; font-weight:700; color:var(--qs-550);">From the QS weekly tech reports, newest first</div>
+          </div>
+          <sc-if value="{{ hasReviews }}" hint-placeholder-val="{{ false }}">
+            <div data-review style="border-top:1px solid var(--qs-150); padding:16px 0 18px;">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                <div style="font-size:17px; font-weight:800; letter-spacing:-0.2px;">Initiative review</div>
+                <div style="font-size:12px; font-weight:700; color:var(--qs-600);">Leadership walkthrough · September 2026</div>
+              </div>
+              <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="1">
+                <div style="margin-top:10px; border-radius:10px; background:#F2F5F6; padding:11px 13px;">
+                  <div style="font-size:12.5px; font-weight:600; line-height:1.5; color:var(--qs-ink);">{{ r.text }}</div>
+                  <sc-if value="{{ r.owner }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:6px; font-size:11px; font-weight:700; color:var(--qs-600);"><span style="font-weight:800; letter-spacing:0.8px; text-transform:uppercase; font-size:9.5px; color:var(--qs-550);">Leading</span> {{ r.owner }}</div>
+                  </sc-if>
+                  <sc-if value="{{ r.timing }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:3px; font-size:11px; font-weight:700; color:var(--qs-600);"><span style="font-weight:800; letter-spacing:0.8px; text-transform:uppercase; font-size:9.5px; color:var(--qs-550);">Timing</span> {{ r.timing }}</div>
+                  </sc-if>
+                  <sc-if value="{{ r.shared }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:3px; font-size:10.5px; font-weight:700; color:var(--qs-550);">{{ r.shared }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-for list="{{ detailWeeks }}" as="w" hint-placeholder-count="3">
+            <div data-week="{{ w.label }}" style="border-top:1px solid var(--qs-150); padding:16px 0 18px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+                  <div style="font-size:17px; font-weight:800; letter-spacing:-0.2px;">{{ w.label }}</div>
+                  <div style="font-size:12px; font-weight:700; color:var(--qs-600);">{{ w.dates }}</div>
+                </div>
+                <sc-if value="{{ w.phase }}" hint-placeholder-val="{{ false }}">
+                  <div title="Board phase in this week’s report" style="font-size:10px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; border-radius:999px; padding:4px 10px; background:{{ w.phaseBg }}; color:{{ w.phaseFg }};">{{ w.phase }}</div>
+                </sc-if>
+              </div>
+              <sc-if value="{{ w.summary }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:8px; font-size:12.5px; font-weight:700; line-height:1.5; color:var(--qs-ink);">{{ w.summary }}</div>
+              </sc-if>
+              <sc-if value="{{ w.hypothesis }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:10px; border-radius:10px; background:#F2F5F6; padding:9px 12px;">
+                  <div style="font-size:9.5px; font-weight:800; letter-spacing:1.1px; text-transform:uppercase; color:var(--qs-600);">Delivery hypothesis · {{ w.signal }}</div>
+                  <div style="margin-top:3px; font-size:12px; font-weight:600; line-height:1.45; color:var(--qs-650);">{{ w.hypothesis }}</div>
+                </div>
+              </sc-if>
+              <sc-for list="{{ w.items }}" as="i" hint-placeholder-count="2">
+                <div style="margin-top:12px; padding-left:12px; border-left:3px solid {{ i.spine }};">
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+                    <div style="font-size:13px; font-weight:800; line-height:1.3;">{{ i.title }}</div>
+                    <sc-if value="{{ i.status }}" hint-placeholder-val="{{ false }}">
+                      <div style="flex:0 0 auto; font-size:9.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; border-radius:999px; padding:3px 8px; background:{{ i.statusBg }}; color:{{ i.statusFg }};">{{ i.status }}</div>
+                    </sc-if>
+                  </div>
+                  <div style="font-size:10px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:var(--qs-550); margin-top:2px;">{{ i.team }}</div>
+                  <sc-if value="{{ i.text }}" hint-placeholder-val="{{ true }}">
+                    <div style="margin-top:5px; font-size:12px; font-weight:600; line-height:1.5; color:var(--qs-650);">{{ i.text }}</div>
+                  </sc-if>
+                  <sc-for list="{{ i.bullets }}" as="b" hint-placeholder-count="0">
+                    <div style="margin-top:4px; display:flex; gap:7px; font-size:12px; font-weight:600; line-height:1.45; color:var(--qs-650);"><span style="flex:0 0 auto;">•</span><span>{{ b.text }}</span></div>
+                  </sc-for>
+                </div>
+              </sc-for>
+              <sc-for list="{{ w.risks }}" as="r" hint-placeholder-count="0">
+                <div style="margin-top:12px; border-radius:10px; padding:9px 12px; background:color-mix(in srgb, var(--qs-orange) 9%, #fff); border-left:3px solid var(--qs-orange);">
+                  <div style="font-size:9.5px; font-weight:800; letter-spacing:1.1px; text-transform:uppercase; color:#B34100;">Risk or decision · {{ r.team }}</div>
+                  <div style="margin-top:3px; font-size:12px; font-weight:600; line-height:1.45; color:var(--qs-ink);">{{ r.text }}</div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ w.empty }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:8px; font-size:12px; font-weight:600; color:var(--qs-550);">No update for this project in the week’s report.</div>
+              </sc-if>
+              <sc-if value="{{ w.inferredNote }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:10px; font-size:10.5px; font-weight:700; color:var(--qs-550);">{{ w.inferredNote }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isGantt }}" hint-placeholder-val="{{ false }}">
+  <div class="board" style="margin-top:20px; overflow-x:auto; padding-bottom:16px;">
+    <div data-view="gantt" style="min-width:1060px; background:#fff; border-radius:16px; padding:14px 16px 16px; box-shadow:0 1px 2px rgba(26,39,46,0.06);">
+
+      <div data-gantt-legend style="display:flex; align-items:center; gap:18px; flex-wrap:wrap; padding:0 0 11px;">
+        <div style="font-size:9.5px; font-weight:800; letter-spacing:1.3px; text-transform:uppercase; color:var(--qs-550);">Effort</div>
+        <sc-for list="{{ effortLegend }}" as="f" hint-placeholder-count="3">
+          <div title="{{ f.tip }}" style="display:flex; align-items:center; gap:6px;">
+            <span style="position:relative; width:26px; height:14px; border-radius:3px; background:color-mix(in srgb, var(--qs-600) 22%, #fff); overflow:hidden;">
+              <span style="position:absolute; left:0; right:0; bottom:0; height:{{ f.fill }}; background:var(--qs-600);"></span>
+            </span>
+            <span style="font-size:9.5px; font-weight:700; color:var(--qs-600);">{{ f.label }}</span>
+          </div>
+        </sc-for>
+        <div style="font-size:9.5px; font-weight:800; letter-spacing:1.3px; text-transform:uppercase; color:var(--qs-550); margin-left:8px;">Stage</div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:26px; height:12px; border-radius:3px; background:var(--qs-600);"></span>
+          <span style="font-size:9.5px; font-weight:700; color:var(--qs-600);">Building or release planning</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:26px; height:12px; border-radius:3px; background:color-mix(in srgb, var(--qs-600) 52%, #fff);"></span>
+          <span style="font-size:9.5px; font-weight:700; color:var(--qs-600);">Scoping or prototype</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:26px; height:12px; border-radius:3px; background:var(--qs-300);"></span>
+          <span style="font-size:9.5px; font-weight:700; color:var(--qs-600);">Released</span>
+        </div>
+      </div>
+
+      <div data-gantt-head style="display:flex; gap:10px; align-items:flex-end; padding-bottom:8px; border-bottom:1.5px solid var(--qs-150);">
+        <div style="flex:0 0 308px; font-size:10.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--qs-550);">Initiative</div>
+        <div style="flex:1 1 0; position:relative; display:flex;">
+          <sc-for list="{{ ganttGuides }}" as="g" hint-placeholder-count="16">
+            <div style="flex:1 1 0; min-width:0; text-align:center; border-left:{{ g.edge }}; font-size:9.5px; font-weight:800; letter-spacing:0.4px; text-transform:uppercase; color:{{ g.fg }};">{{ g.label }}</div>
+          </sc-for>
+          <sc-if value="{{ todayFlag }}" hint-placeholder-val="{{ true }}">
+            <div title="Today, {{ todayLabel }}" style="position:absolute; bottom:-9px; left:{{ todayLeft }}; transform:translateX(-50%); display:flex; align-items:center; gap:4px; font-size:8.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; color:var(--qs-signal-red); white-space:nowrap;">Today</div>
+          </sc-if>
+        </div>
+        <div style="flex:0 0 76px; text-align:right; font-size:10.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--qs-550);">Capex</div>
+      </div>
+
+      <div data-gantt-body style="position:relative;">
+      <sc-for list="{{ ganttBands }}" as="band" hint-placeholder-count="4">
+      <div data-gantt-band="{{ band.label }}">
+        <sc-if value="{{ band.showHead }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; align-items:center; gap:9px; padding:13px 0 6px;">
+            <span style="flex:0 0 auto; width:11px; height:11px; border-radius:3px; background:{{ band.dot }};"></span>
+            <div style="font-size:12px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase;">{{ band.label }}</div>
+            <div style="flex:0 0 auto; font-size:11px; font-weight:700; color:var(--qs-600); background:var(--qs-150); border-radius:999px; padding:2px 9px;">{{ band.count }}</div>
+            <div style="flex:1 1 auto; height:1px; background:var(--qs-150);"></div>
+            <div style="flex:0 0 76px; text-align:right; font-size:11px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--qs-600);">{{ band.capex }}</div>
+          </div>
+        </sc-if>
+        <sc-for list="{{ band.rows }}" as="r" hint-placeholder-count="8">
+        <div data-gantt-row="{{ r.id }}" onClick="{{ r.open }}" style="cursor:pointer; display:flex; gap:10px; align-items:center; border-bottom:1px solid #F2F5F6; transition:background .12s;" style-hover="background:#F8FAFB;">
+          <div style="flex:0 0 308px; min-width:0; display:flex; gap:8px; align-items:stretch; padding:4px 0;">
+            <span style="flex:0 0 auto; width:4px; border-radius:1px; background:{{ r.spine }};"></span>
+            <div style="flex:1 1 auto; align-self:center; min-width:0; font-size:12px; font-weight:800; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ r.name }}</div>
+            <div style="flex:0 0 auto; align-self:center; font-size:9px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--qs-550);">{{ r.id }}</div>
+            <span title="{{ r.tierTip }}" style="flex:0 0 auto; align-self:center; width:15px; height:15px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; background:{{ r.tierBg }}; color:{{ r.tierFg }};">{{ r.tier }}</span>
+            <span title="{{ r.areaTip }}" style="flex:0 0 auto; align-self:center; width:15px; height:15px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; background:#fff; color:var(--qs-ink); box-shadow:inset 0 0 0 1px var(--qs-250);">{{ r.area }}</span>
+            <sc-if value="{{ r.lightFlag }}" hint-placeholder-val="{{ true }}">
+              <span title="{{ r.lightTip }}" style="flex:0 0 auto; align-self:center; width:11px; height:11px; border-radius:3px; background:{{ r.light }}; box-shadow:inset 0 0 0 1px {{ r.lightRing }};"></span>
+            </sc-if>
+            <span title="{{ r.stageTip }}" style="flex:0 0 auto; align-self:center; font-size:9px; font-weight:800; letter-spacing:0.7px; color:var(--qs-600);">{{ r.stageCode }}</span>
+          </div>
+          <div style="flex:1 1 0; position:relative; height:26px;">
+            <div style="position:absolute; inset:0; display:flex;">
+              <sc-for list="{{ ganttGuides }}" as="g" hint-placeholder-count="16">
+                <div style="flex:1 1 0; border-right:1px solid #F2F5F6; border-left:{{ g.edge }}; background:{{ g.bg }};"></div>
+              </sc-for>
+            </div>
+            <sc-for list="{{ r.bars }}" as="b" hint-placeholder-count="1">
+              <div title="{{ b.tip }}" style="position:absolute; top:5px; height:16px; left:{{ b.left }}; width:{{ b.width }}; background:{{ r.color }}; border:{{ r.barBorder }}; border-radius:4px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <span style="position:absolute; left:0; right:0; bottom:0; height:{{ r.fillHeight }}; background:{{ r.barFill }};"></span>
+                <span style="position:relative; font-size:8.5px; font-weight:800; letter-spacing:0.4px; text-transform:uppercase; color:{{ r.barFg }}; white-space:nowrap;">{{ b.wide }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ r.stateFlag }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; top:5px; left:0; height:16px; display:flex; align-items:center; font-size:9px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:{{ r.stateFg }};">{{ r.state }}</div>
+            </sc-if>
+          </div>
+          <div title="{{ r.capexTip }}" style="flex:0 0 76px; text-align:right; font-size:11.5px; font-weight:800; font-variant-numeric:tabular-nums; color:{{ r.capexFg }};">{{ r.capex }}</div>
+        </div>
+        </sc-for>
+      </div>
+      </sc-for>
+      <sc-if value="{{ todayFlag }}" hint-placeholder-val="{{ true }}">
+        <div data-today-overlay title="Today, {{ todayLabel }}" style="position:absolute; inset:0; display:flex; gap:10px; pointer-events:none;">
+          <div style="flex:0 0 308px;"></div>
+          <div style="flex:1 1 0; position:relative;">
+            <div style="position:absolute; top:0; bottom:0; left:{{ todayLeft }}; width:1.5px; margin-left:-0.75px; background:var(--qs-signal-red);"></div>
+          </div>
+          <div style="flex:0 0 76px;"></div>
+        </div>
+      </sc-if>
+      </div>
+
+      <div data-gantt-total style="display:flex; gap:10px; align-items:baseline; margin-top:6px; padding-top:10px; border-top:1.5px solid var(--qs-150);">
+        <div style="flex:0 0 308px; font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--qs-ink);">Total capex</div>
+        <div style="flex:1 1 0; min-width:0; font-size:10px; font-weight:700; color:var(--qs-550);">{{ ganttCount }}</div>
+        <div style="flex:0 0 76px; text-align:right; font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; color:var(--qs-ink);">{{ ganttCapexTotal }}</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+  <div class="board" data-view="table" style="margin-top:20px; background:#fff; border-radius:16px; padding:6px 0 10px; box-shadow:0 1px 2px rgba(26,39,46,0.06); overflow-x:auto;">
+    <div style="min-width:1000px;">
+    <div data-table-head style="display:grid; grid-template-columns:minmax(130px,1.3fr) 76px 118px 88px minmax(150px,1.5fr) minmax(130px,1.4fr) minmax(100px,1fr) 92px; gap:11px; padding:14px 22px 12px; border-bottom:1.5px solid var(--qs-150);">
+      <sc-for list="{{ tableHeads }}" as="h" hint-placeholder-count="8">
+        <div data-sort="{{ h.label }}" onClick="{{ h.pick }}" title="{{ h.tip }}" style="cursor:{{ h.cursor }}; user-select:none; display:flex; align-items:center; gap:5px; font-size:10.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:{{ h.color }};">{{ h.label }}<span style="font-size:8px; letter-spacing:0;">{{ h.arrow }}</span></div>
+      </sc-for>
+    </div>
+    <sc-for list="{{ tableRows }}" as="p" hint-placeholder-count="10">
+      <div data-table-row onClick="{{ p.open }}" data-name="{{ p.name }}" data-portfolio="{{ p.laneLabel }}" data-stage="{{ p.proto }}" data-stack="{{ p.stack }}" data-risk="{{ p.riskLabel }}" data-owner="{{ p.leader }}" data-product="{{ p.productName }}" data-placeholder="{{ p.placeholderFlag }}" style="cursor:pointer; display:grid; grid-template-columns:minmax(130px,1.3fr) 76px 118px 88px minmax(150px,1.5fr) minmax(130px,1.4fr) minmax(100px,1fr) 92px; gap:11px; align-items:center; padding:13px 22px; border-bottom:1px solid #F2F5F6; transition:background .12s;" style-hover="background:#F8FAFB;">
+        <div style="display:flex; gap:9px; min-width:0;">
+          <span style="flex:0 0 auto; width:4px; border-radius:999px; background:{{ p.groupColor }};"></span>
+          <div style="min-width:0;">
+            <div style="font-size:13.5px; font-weight:800; line-height:1.25;">{{ p.name }}</div>
+            <div style="font-size:9.5px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--qs-550); margin-top:3px;">{{ p.tableMeta }}</div>
+          </div>
+        </div>
+        <div>
+          <span style="display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; white-space:nowrap; border-radius:999px; padding:3px 8px; background:{{ p.stackBg }}; color:{{ p.stackFg }}; border:1px solid {{ p.stackBorder }};">{{ p.stack }}</span>
+        </div>
+        <div>
+          <span style="display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; white-space:nowrap; border-radius:999px; padding:4px 9px; background:{{ p.protoBg }}; color:{{ p.protoFg }};">{{ p.proto }}</span>
+        </div>
+        <div style="display:flex; gap:5px;">
+          <div title="{{ p.leaderTip }}" style="width:24px; height:24px; border-radius:999px; background:{{ p.leaderBg }}; color:{{ p.leaderFg }}; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.leaderInitials }}</div>
+          <div title="{{ p.dataTip }}" style="width:24px; height:24px; border-radius:999px; background:var(--qs-600); color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.dataInitials }}</div>
+          <div title="{{ p.engTip }}" style="width:24px; height:24px; border-radius:999px; background:var(--qs-650); color:#fff; font-size:9.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.engInitials }}</div>
+        </div>
+        <div style="font-size:11.5px; font-weight:600; line-height:1.45; color:var(--qs-650); max-height:34px; overflow:hidden; text-wrap:pretty;">{{ p.desc }}</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div style="display:flex; gap:2px;">
+            <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="15">
+              <div style="flex:1 1 0; height:8px; border-radius:2px; background:{{ m.bg }};"></div>
+            </sc-for>
+          </div>
+          <div style="font-size:10px; font-weight:700; color:var(--qs-550); letter-spacing:0.3px;">{{ p.discoveryLabel }}</div>
+          <sc-if value="{{ p.maintLabel }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; color:var(--qs-600);"><span style="flex:0 0 auto; width:12px; height:8px; border-radius:2px; background:{{ p.maintTint }};"></span>{{ p.maintLabel }}</div>
+          </sc-if>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div style="display:flex; gap:3px;">
+            <sc-for list="{{ p.riskSegs }}" as="s" hint-placeholder-count="4">
+              <div style="flex:1 1 0; height:8px; border-radius:999px; background:{{ s.bg }};"></div>
+            </sc-for>
+          </div>
+          <div style="font-size:9.5px; font-weight:800; letter-spacing:0.9px; text-transform:uppercase; color:{{ p.riskFg }};">{{ p.riskLabel }}</div>
+        </div>
+        <div>
+          <div style="font-size:12.5px; font-weight:800;">{{ p.review }}</div>
+          <div style="font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--qs-550); margin-top:2px;">{{ p.reviewNote }}</div>
+        </div>
+      </div>
+    </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isKanban }}" hint-placeholder-val="{{ true }}">
+  <div class="board" style="margin-top:20px; overflow-x:auto; padding-bottom:16px;">
+    <div data-view="kanban" style="min-width:1080px; background:#fff; border-radius:16px; padding:16px 16px 18px; box-shadow:0 1px 2px rgba(26,39,46,0.06);">
+      <div style="display:grid; grid-template-columns:repeat({{ stageCount }}, minmax(0,1fr)); gap:10px;">
+        <sc-for list="{{ stageHeads }}" as="s" hint-placeholder-count="5">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; background:#1A272E; border-radius:10px; padding:9px 12px;">
+            <div style="font-size:11px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:#fff;">{{ s.label }}</div>
+            <div style="font-size:11px; font-weight:800; color:#fff; background:rgba(255,255,255,0.16); border-radius:999px; padding:2px 8px;">{{ s.count }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-for list="{{ lanes }}" as="l" hint-placeholder-count="4">
+        <div style="margin-top:20px;">
+          <div style="display:flex; align-items:center; gap:12px; padding:0 4px;">
+            <span style="flex:0 0 auto; width:12px; height:12px; border-radius:4px; background:{{ l.color }};"></span>
+            <div style="flex:0 0 auto; font-size:15px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase;">{{ l.label }}</div>
+            <div style="flex:0 0 auto; font-size:11.5px; font-weight:700; color:var(--qs-600); background:var(--qs-150); border-radius:999px; padding:3px 10px;">{{ l.countLabel }}</div>
+            <div style="flex:1 1 auto; height:1px; background:var(--qs-150);"></div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat({{ stageCount }}, minmax(0,1fr)); gap:10px; margin-top:10px;">
+            <sc-for list="{{ l.cols }}" as="c" hint-placeholder-count="5">
+              <div style="background:#F2F5F6; border-radius:12px; padding:6px; display:flex; flex-direction:column; gap:6px; min-height:48px;">
+                <sc-for list="{{ c.cards }}" as="k" hint-placeholder-count="3">
+                  <div data-kanban-card onClick="{{ k.open }}" title="{{ k.tip }}" style="cursor:pointer; display:flex; align-items:stretch; gap:8px; min-width:0; background:#fff; border:1px solid var(--qs-150); border-left:none; border-radius:0 8px 8px 0; overflow:hidden; padding:0 8px 0 0; transition:transform .12s, box-shadow .12s;" style-hover="transform:translateY(-1px); box-shadow:0 6px 14px rgba(26,39,46,0.10);">
+                    <span style="flex:0 0 auto; width:4px; background:{{ l.color }};"></span>
+                    <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px; padding:7px 0 6px;">
+                      <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                      <div style="flex:1 1 auto; align-self:center; min-width:0; font-size:13px; font-weight:800; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ k.name }}</div>
+                      <span title="{{ k.stackTip }}" style="flex:0 0 auto; align-self:center; width:10px; height:10px; border-radius:3px; background:{{ k.stackBg }}; box-shadow:inset 0 0 0 1px {{ k.stackBorder }};"></span>
+                      <div style="flex:0 0 auto; align-self:center; font-size:10px; font-weight:800; letter-spacing:0.8px; color:var(--qs-600);">{{ k.idLabel }}</div>
+                      <sc-if value="{{ k.hasOwner }}" hint-placeholder-val="{{ false }}">
+                        <div title="{{ k.ownerName }}" style="flex:0 0 auto; align-self:center; width:20px; height:20px; border-radius:999px; background:{{ k.ownerBg }}; color:{{ k.ownerFg }}; font-size:8.5px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ k.owner }}</div>
+                      </sc-if>
+                      <sc-if value="{{ k.noOwner }}" hint-placeholder-val="{{ true }}">
+                        <div title="Unassigned" style="flex:0 0 auto; align-self:center; width:20px; height:20px; border-radius:999px; border:1.5px dashed var(--qs-250); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;">
+                          <span style="width:5px; height:5px; border-radius:999px; border:1.2px solid var(--qs-400);"></span>
+                          <span style="width:9px; height:4px; border-radius:5px 5px 0 0; border:1.2px solid var(--qs-400); border-bottom:none;"></span>
+                        </div>
+                      </sc-if>
+                      </div>
+                      <div title="{{ k.buildTip }}" style="display:flex; gap:1px;">
+                        <sc-for list="{{ k.months }}" as="m" hint-placeholder-count="16">
+                          <div style="flex:1 1 0; height:3px; border-radius:1px; background:{{ m.bg }};"></div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1100}}">
+class Component extends DCLogic {
+  state = {
+    groups: [], stack: 'All', view: 'Gantt', sortKey: 'name', sortDir: 'asc', hideReleased: false, ganttGroup: 'Portfolio', ganttSort: 'Start',
+    selected: location.hash ? decodeURIComponent(location.hash.slice(1)) : null,
+  };
+
+  // ---- data/plan.js is the only source; everything below reads it.
+  plan() {
+    return window.QS_PLAN;
+  }
+
+  // An initiative is keyed by its first epic number, or by its name when it has none yet.
+  cardKey(i) {
+    return i.ids.length ? i.ids[0] : i.name;
+  }
+
+  // Build a lookup off the initiatives: every id a card answers to points at the same value.
+  fromInitiatives(pick, keepUndefined) {
+    const out = {};
+    for (const i of this.plan().initiatives) {
+      const v = pick(i);
+      if (v === undefined && !keepUndefined) continue;
+      if (v === undefined) continue;
+      for (const k of (i.ids.length ? i.ids : [i.name])) out[k] = v;
+    }
+    return out;
+  }
+
+  byKey(list, pick) {
+    const out = {};
+    for (const x of list) out[x.key] = pick(x);
+    return out;
+  }
+
+  // The detail page lives at #<epic id> (or #<name> for a card with no ID), so it can be linked
+  // to and the browser's back button closes it. Esc closes it too.
+  hashKey() {
+    try { return decodeURIComponent(location.hash.slice(1)) || null; } catch (e) { return null; }
+  }
+
+  componentDidMount() {
+    this.onPop = () => this.setState({ selected: this.hashKey() });
+    this.onKey = e => { if (e.key === 'Escape' && this.state.selected) this.closeDetail(); };
+    window.addEventListener('popstate', this.onPop);
+    window.addEventListener('keydown', this.onKey);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.onPop);
+    window.removeEventListener('keydown', this.onKey);
+  }
+
+  openDetail(key) {
+    if (this.hashKey() !== key) {
+      history.pushState(null, '', '#' + encodeURIComponent(key));
+      this.pushedDetail = true;
+    }
+    this.setState({ selected: key });
+    window.scrollTo(0, 0);
+  }
+
+  closeDetail() {
+    if (this.pushedDetail) {
+      this.pushedDetail = false;
+      history.back();
+    } else {
+      history.replaceState(null, '', location.pathname + location.search);
+      this.setState({ selected: null });
+    }
+  }
+
+  // ISO week of today, e.g. "Week 38, 2026". Shown in place of the old "QS Technology" eyebrow.
+  weekLabel() {
+    const now = new Date();
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const week = Math.ceil(((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+    return 'Week ' + week + ', ' + d.getUTCFullYear();
+  }
+
+  groupDefs() {
+    return this.plan().portfolios;
+  }
+
+  // A build window is either one [start, end] range or a list of ranges for work that pauses and
+  // picks up again; everything that reads a window goes through these three.
+  buildRanges(w) {
+    return typeof w[0] === 'number' ? [w] : w;
+  }
+
+  // Initiatives read as IN-nn on screen. Everything underneath — Jira, the schedule, the weekly
+  // reports, the detail page's #EP-46 link — keeps the EP-nn key, so an update that comes through
+  // naming EP-nn still matches; only the label changes.
+  initiativeLabel(id) {
+    return String(id).replace(/^EP-/, 'IN-');
+  }
+
+  windowLabel(months, w) {
+    return this.buildRanges(w)
+      .map(r => (r[0] === r[1] ? months[r[0]] : months[r[0]] + ' – ' + months[r[1]]))
+      .join(' · ');
+  }
+
+  inWindow(w, i) {
+    return this.buildRanges(w).some(r => i >= r[0] && i <= r[1]);
+  }
+
+  // Initiatives the investment committee has approved. Seeded from stage — anything building, in
+  // release planning or released has its money committed — so edit this list as decisions are taken.
+  // An initiative not listed here draws a pale, dashed bar in the Gantt.
+  // Initiatives the investment committee has approved, set in the October planning session: the ones
+  // given a red, amber or green call, plus everything already released. An initiative not listed here
+  // draws a pale, dashed bar and an unlit traffic light in the Gantt.
+  investmentApproved() {
+    return this.plan().initiatives.filter(i => i.approved).map(i => this.cardKey(i));
+  }
+
+  // Delivery tier, 1 to 3, keyed by epic id. 1 carries the most weight; an initiative with no entry
+  // shows a dash. Inferred from the Week 33–38 reports: how many of the six weeks carried an update
+  // for the initiative — 3 or more is tier 1, one or two is tier 2, none is tier 3. Replace an entry
+  // here to set a tier by hand.
+  // Delivery tier, 1 to 3, keyed by epic id — or by name for a card with no epic number yet.
+  // Inferred from the Week 33–38, 40 and 41 reports: how many of the eight reported weeks carried an
+  // update for the initiative. Three or more is tier 1, one or two is tier 2, none is tier 3.
+  // Entries set by hand in the October planning session override the inference.
+  tiers() {
+    return this.fromInitiatives(i => i.tier);
+  }
+
+  // Build effort, keyed by epic id or card name: small, medium or large. It is fixed for the whole
+  // build — the shape of the work does not change mid-flight — and it prices the capex: small is
+  // £1k a week, medium £2k, large £5k. Anything the plan does not set reads medium.
+  efforts() {
+    return this.fromInitiatives(i => i.effort);
+  }
+
+  // Business area, keyed by epic id or card name: S Skills (employability, labour market, LMI),
+  // R Recruitment (candidate recruitment, global student flows), I Innovation (HolonIQ, AI evaluation,
+  // market intelligence), P Performance (rankings, reputation), Q every area of QS — the platform,
+  // identity, infrastructure, security, data layer and company-wide tooling the rest is built on.
+  // The second value is the context the card sits in.
+  areas() {
+    return this.fromInitiatives(i => i.area && [i.area.letter, i.area.context]);
+  }
+
+  areaStyle(letter) {
+    return {
+      Q: 'All of QS', S: 'Skills', R: 'Recruitment', I: 'Innovation', P: 'Performance',
+    }[letter] || '';
+  }
+
+  tierStyle(tier) {
+    return {
+      1: { bg: 'var(--qs-ink)', fg: '#fff' },
+      2: { bg: 'var(--qs-450)', fg: 'var(--qs-ink)' },
+      3: { bg: 'var(--qs-150)', fg: 'var(--qs-600)' },
+    }[tier] || { bg: 'transparent', fg: 'var(--qs-300)' };
+  }
+
+  // Build windows [startMonthIdx, endMonthIdx] set on a single initiative, keyed by epic id (see
+  // monthNames). These win over the window its roadmap product carries, and give a card with no
+  // product profile a window of its own.
+  // A window of null is deliberate: it clears the one the product profile would lend.
+  epicBuildWindows() {
+    return this.fromInitiatives(i => ('buildWindow' in i ? i.buildWindow : undefined), true);
+  }
+
+  // The roadmap product profiles, in the row shape the rest of this component reads.
+  raw() {
+    return this.plan().products.map(p => [p.key, p.group, p.owner, p.stack, p.buildWindow,
+      p.readiness.data, p.readiness.design, p.readiness.engineering, p.stage, p.review, p.reviewNote]);
+  }
+
+  segs(level, color) {
+    const out = [];
+    for (let i = 0; i < 4; i++) out.push({ bg: i < level ? color : 'var(--qs-150)' });
+    return out;
+  }
+
+  levelLabel(level) {
+    return ['Not started', 'Early', 'In progress', 'Near ready', 'Ready'][level];
+  }
+
+  monthNames() {
+    return this.plan().meta.months;
+  }
+
+  initials(name) {
+    return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  }
+
+  leads() {
+    return this.byKey(this.plan().products, p => [p.leads.engineering, p.leads.data]);
+  }
+
+  descriptions() {
+    return this.byKey(this.plan().products, p => p.description);
+  }
+
+  // Technical risk for a card with no roadmap product profile, keyed by epic id or by name.
+  // 0 none, 1 low, 2 moderate, 3 high, 4 critical.
+  // Technical risk, keyed by epic id or card name. 0 none, 1 low, 2 moderate, 3 high, 4 critical.
+  // An entry here wins over the risk the card's roadmap product profile carries.
+  epicRisks() {
+    return this.fromInitiatives(i => i.risk && [i.risk.level, i.risk.note]);
+  }
+
+  risks() {
+    return this.byKey(this.plan().products.filter(p => p.risk), p => [p.risk.level, p.risk.note]);
+  }
+
+  commentary() {
+    return this.byKey(this.plan().products.filter(p => p.notes.length), p => p.notes.map(n => [n.head, n.body]));
+  }
+
+  // Epic board lanes, in board order. `group` is the roadmap portfolio each lane belongs to.
+  lanes() {
+    return this.plan().lanes;
+  }
+
+  // Months view columns: the delivery teams grouped into the five reporting groups. The schedule
+  // itself stays at team level, so a ticket records SYD1 or BLR2 and the view maps it up to a column.
+  monthColumns() {
+    return this.plan().teamColumns;
+  }
+
+  // Delivery teams, in Teams-page order. Their short names label each ticket in the Months view.
+  // [id, name, short label for a Months ticket — the full name would crowd out the ticket name]
+  deliveryTeams() {
+    return this.plan().teams.map(t => [t.id, t.name, t.short]);
+  }
+
+  // Kanban stages, left to right. The epic board screenshot these came from crops its
+  // column headers, so the names are inferred from the stage notes used in this file and
+  // the quarter view (Codex = Scoping, Aurora implementation = Release planning, QAS Auth = Released).
+  stages() {
+    return this.plan().stages;
+  }
+
+  owners() {
+    return this.plan().owners;
+  }
+
+  // One row per initiative, in the tuple shape renderVals reads.
+  epics() {
+    return this.plan().initiatives.map(i => [i.ids, i.name, i.lane, i.stage, i.owner,
+      i.products.length ? (i.products.length === 1 ? i.products[0] : i.products) : null]);
+  }
+
+  // Descriptions for initiatives that have no roadmap product profile yet, in place of the
+  // placeholder wording.
+  epicDescriptions() {
+    return this.fromInitiatives(i => i.description);
+  }
+
+  // Epics under heavy maintenance. Every month outside the build window shows a light tint of the
+  // portfolio colour on the Expected build track instead of the empty track colour.
+  heavyMaintenance() {
+    return this.plan().initiatives.filter(i => i.heavyMaintenance).flatMap(i => i.ids);
+  }
+
+  // Initiative leads, assigned per epic in the September 2026 pass: [product, data, engineering].
+  // '' means it was not assigned. These override the leads inherited from the roadmap product profile.
+  initiativeLeads() {
+    return this.fromInitiatives(i => i.leads && [i.leads.product, i.leads.data, i.leads.engineering]);
+  }
+
+  protoStyle(stage) {
+    return {
+      Scoping: { bg: 'var(--qs-150)', fg: 'var(--qs-ink)' },
+      Prototype: { bg: 'var(--qs-250)', fg: 'var(--qs-ink)' },
+      Building: { bg: 'var(--qs-400)', fg: 'var(--qs-ink)' },
+      'Release planning': { bg: 'var(--qs-600)', fg: '#fff' },
+      Released: { bg: 'var(--qs-signal-blue)', fg: '#fff' },
+    }[stage];
+  }
+
+  renderVals() {
+    const defs = this.groupDefs();
+    const colorOf = {};
+    defs.forEach(d => { colorOf[d.key] = d.color; });
+    const active = this.state.groups;
+    const stack = this.state.stack;
+    const view = this.state.view;
+    const months = this.monthNames();
+    const stages = this.stages();
+    const owners = this.owners();
+    const heavy = new Set(this.heavyMaintenance());
+    const assigned = this.initiativeLeads();
+    const epicDescs = this.epicDescriptions();
+    const buildWindows = this.epicBuildWindows();
+    const tiers = this.tiers();
+    const areas = this.areas();
+    const approved = new Set(this.investmentApproved());
+    const ownerByName = {};
+    Object.keys(owners).forEach(k => { ownerByName[owners[k].name] = owners[k]; });
+    const laneDefs = this.lanes();
+    const laneOf = {};
+    laneDefs.forEach(l => { laneOf[l.key] = l; });
+
+    const notes = this.commentary();
+    const descs = this.descriptions();
+    const risks = this.risks();
+    const epicRiskOf = this.epicRisks();
+    const effortOf = this.efforts();
+    const leads = this.leads();
+    const rawOf = {};
+    this.raw().forEach(r => { rawOf[r[0]] = r; });
+
+    // One entry per Kanban card. The Kanban supplies name, IDs, lane, stage and owner; everything
+    // else is inherited from the roadmap product the epic maps to, or TBC when it has no profile yet.
+    const epics = this.epics().map(([ids, name, lane, stage, owner, product]) => {
+      const products = product ? [].concat(product) : [];
+      const r = products.length ? rawOf[products[0]] : null;
+      if (products.length && !r) console.warn('[roadmap] epic "' + name + '" maps to unknown product "' + products[0] + '"');
+      const l = laneOf[lane];
+      const color = colorOf[l.group];
+      const o = owner ? owners[owner] : null;
+      const proto = stages[stage];
+      const protoStyle = this.protoStyle(proto);
+      const released = proto === 'Released';
+      const maint = ids.some(id => heavy.has(id));
+      const offTrack = maint ? 'color-mix(in srgb, ' + color + ' 35%, #fff)' : 'var(--qs-150)';
+      const idText = ids.length ? ids.map(id => this.initiativeLabel(id)).join(' · ') : 'No ID';
+      const key = ids[0] || name;
+      // [product, data, engineering] assigned to this initiative, else the Kanban owner and the
+      // roadmap product's leads.
+      // An initiative with an assignment uses only those names: a role left blank in the assignment
+      // reads TBC rather than falling back to the roadmap product's inherited lead.
+      const cardKeys = ids.length ? ids : [name];
+      const set = cardKeys.map(id => assigned[id]).find(Boolean);
+      // An initiative can carry its own window, or null for work with nothing scheduled yet —
+      // which clears the window it would otherwise inherit from its roadmap product.
+      const ownKey = cardKeys.find(id => Object.prototype.hasOwnProperty.call(buildWindows, id));
+      const own = ownKey ? buildWindows[ownKey] : null;
+      const inherited = r ? (leads[r[0]] || ['TBC', 'TBC']) : ['TBC', 'TBC'];
+      const leader = set ? (set[0] || 'Unassigned') : (o ? o.name : 'Unassigned');
+      const leaderStyle = ownerByName[leader] || (leader !== 'Unassigned' ? { bg: 'var(--qs-600)', fg: '#fff' } : null);
+      const lead = set ? [set[2] || 'TBC', set[1] || 'TBC'] : inherited;
+      const base = {
+        ids, name, lane, stage, owner, products, laneLabel: l.label, key, idText,
+        open: () => this.openDetail(key),
+        groups: [l.group],
+        groupColor: color,
+        leader, leaderInitials: leaderStyle ? this.initials(leader) : '–',
+        leaderBg: leaderStyle ? leaderStyle.bg : 'var(--qs-150)', leaderFg: leaderStyle ? leaderStyle.fg : 'var(--qs-600)',
+        engLead: lead[0], engInitials: this.initials(lead[0]),
+        dataLead: lead[1], dataInitials: this.initials(lead[1]),
+        leaderTip: 'Product leader: ' + leader,
+        dataTip: 'Data leader: ' + lead[1],
+        engTip: 'Engineering leader: ' + lead[0],
+        proto, protoBg: protoStyle.bg, protoFg: protoStyle.fg,
+        effort: (ids.length ? ids : [name]).map(id => effortOf[id]).find(Boolean) || 'medium',
+        epicChips: (ids.length ? ids : ['No ID']).map(id => ({ label: this.initiativeLabel(id) })),
+        productLabel: r ? 'Roadmap product: ' + products.join(' + ') : 'No roadmap profile yet',
+        productName: r ? products.join(' + ') : '',
+        maintLabel: maint ? 'Heavy maintenance outside build' : '',
+        maintTint: offTrack,
+        placeholderFlag: r ? 'no' : 'yes',
+      };
+      if (!r) {
+        const empty = this.segs(0, color);
+        // `own` outside this branch is the build window; the risk override needs its own name.
+        const ownRisk = cardKeys.map(id => epicRiskOf[id]).find(Boolean) || null;
+        const w = own;
+        const wr = w ? this.buildRanges(w) : null;
+        const tw = wr ? Math.min(7, 4 + Math.floor(Math.max(0, wr[0][0] - 1) / 3)) : null;
+        return {
+          ...base,
+          stack: /^QAS\b/.test(name) ? 'QAS' : 'Other',
+          headerBg: 'repeating-linear-gradient(135deg, rgba(255,255,255,0.4) 0 8px, rgba(255,255,255,0) 8px 16px), ' + color,
+          isPlaceholder: true,
+          months: months.map((m, i) => ({ bg: !released && w && this.inWindow(w, i) ? color : offTrack })),
+          discoveryLabel: released ? 'Released' : (w ? this.windowLabel(months, w) : 'Build window TBC'),
+          tracks: [0, 1, 2].map(() => ({ label: 'TBC', segs: empty })),
+          review: released ? 'Live' : (w ? 'TW' + tw : 'TBC'), reviewNote: '',
+          sortBuild: released ? -1 : (wr ? wr[0][0] + wr[wr.length - 1][1] / 100 : null),
+          sortReady: released ? 0 : (w ? tw : null), sortRisk: ownRisk ? ownRisk[0] : null,
+          desc: ids.map(id => epicDescs[id]).find(Boolean) || epicDescs[name] ||
+            'Not yet profiled for the roadmap. Scope, leads and readiness to be confirmed.',
+          tableMeta: idText + ' · Placeholder',
+          riskSegs: ownRisk ? this.segs(ownRisk[0], ['var(--qs-150)', 'var(--qs-yellow)', 'var(--qs-amber)', 'var(--qs-orange)', 'var(--qs-red)'][ownRisk[0]]) : empty,
+          riskLabel: ownRisk ? ['None', 'Low', 'Moderate', 'High', 'Critical'][ownRisk[0]] : 'TBC',
+          riskFg: ownRisk ? ['var(--qs-550)', '#7A6000', '#8A5200', '#B34100', '#B32617'][ownRisk[0]] : 'var(--qs-550)',
+          riskText: ownRisk ? ownRisk[1] : 'Not yet assessed.',
+          notes: [
+            { head: 'Position', body: 'On the Kanban, no roadmap profile yet.' },
+            { head: 'Next', body: 'Confirm build window, leads, readiness and risk.' },
+          ],
+        };
+      }
+      const [pName, , , st, profileWindow, data, design, eng, , , reviewNote] = r;
+      const d = ownKey ? own : profileWindow;
+      const dr = d ? this.buildRanges(d) : null;
+      const readyWeek = dr ? Math.min(7, 4 + Math.floor(Math.max(0, dr[0][0] - 1) / 3)) : null;
+      const risk = cardKeys.map(id => epicRiskOf[id]).find(Boolean) || risks[pName] || [0, ''];
+      return {
+        ...base,
+        stack: st,
+        headerBg: color, isPlaceholder: false,
+        months: months.map((m, i) => ({ bg: !released && d && this.inWindow(d, i) ? color : offTrack })),
+        discoveryLabel: released ? 'Released' : (d ? this.windowLabel(months, d) : 'Build window TBC'),
+        tracks: [
+          { label: this.levelLabel(data), segs: this.segs(data, 'var(--qs-600)') },
+          { label: this.levelLabel(design), segs: this.segs(design, 'var(--qs-600)') },
+          { label: this.levelLabel(eng), segs: this.segs(eng, 'var(--qs-600)') },
+        ],
+        review: released ? 'Live' : (dr ? 'TW' + readyWeek : 'TBC'),
+        sortBuild: released ? -1 : (dr ? dr[0][0] + dr[dr.length - 1][1] / 100 : null),
+        sortReady: released ? 0 : (dr ? readyWeek : null),
+        sortRisk: risk[0],
+        reviewNote: released || !dr ? '' : reviewNote,
+        desc: descs[pName] || '',
+        tableMeta: idText + ' · ' + products.join(' + '),
+        riskSegs: this.segs(risk[0], ['var(--qs-150)', 'var(--qs-yellow)', 'var(--qs-amber)', 'var(--qs-orange)', 'var(--qs-red)'][risk[0]]),
+        riskLabel: ['None', 'Low', 'Moderate', 'High', 'Critical'][risk[0]],
+        riskFg: ['var(--qs-550)', '#7A6000', '#8A5200', '#B34100', '#B32617'][risk[0]],
+        riskText: risk[1],
+        notes: (notes[pName] || []).filter(n => n[0] !== 'Risk').map(n => ({ head: n[0], body: n[1] })),
+      };
+    });
+
+    // A portfolio chip matches a project through its Kanban lane.
+    const stackStyle = {
+      QAS: { bg: 'var(--qs-750)', fg: '#fff', border: 'var(--qs-750)' },
+      Legacy: { bg: 'var(--qs-250)', fg: 'var(--qs-ink)', border: 'var(--qs-250)' },
+      Other: { bg: '#fff', fg: 'var(--qs-600)', border: 'var(--qs-400)' },
+    };
+    epics.forEach(e => {
+      const ss = stackStyle[e.stack];
+      e.stackBg = ss.bg; e.stackFg = ss.fg; e.stackBorder = ss.border;
+    });
+
+    const hideReleased = this.state.hideReleased;
+    const shown = epics.filter(e =>
+      (active.length === 0 || e.groups.some(g => active.indexOf(g) >= 0)) &&
+      (stack === 'All' || e.stack === stack) &&
+      !(hideReleased && e.proto === 'Released'));
+    const stageIdx = stages.map((s, i) => i).filter(i => !(hideReleased && stages[i] === 'Released'));
+
+    // Table sort. Risk defaults to highest first; TBC values always sort last.
+    const sortKey = this.state.sortKey;
+    const sortDir = this.state.sortDir;
+    const sortVal = { name: e => e.name, stage: e => e.stage, build: e => e.sortBuild, risk: e => e.sortRisk, ready: e => e.sortReady }[sortKey];
+    const byName = (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true });
+    const tableRows = shown.slice().sort((a, b) => {
+      const va = sortVal(a), vb = sortVal(b);
+      if (va == null || vb == null) return (va == null) - (vb == null) || byName(a, b);
+      const d = typeof va === 'string' ? byName(a, b) : va - vb;
+      return (sortDir === 'asc' ? d : -d) || byName(a, b);
+    });
+    const tableHeads = [['Project', 'name'], ['Stack'], ['Stage', 'stage'], ['Leads'], ['Description'],
+      ['Expected build', 'build'], ['Technical risk', 'risk'], ['Ready check', 'ready']].map(([label, key]) => ({
+      label,
+      arrow: key && key === sortKey ? (sortDir === 'asc' ? '▲' : '▼') : '',
+      color: key && key === sortKey ? 'var(--qs-ink)' : 'var(--qs-550)',
+      cursor: key ? 'pointer' : 'default',
+      tip: key ? 'Sort by ' + label.toLowerCase() : '',
+      pick: key ? () => this.setState(st => st.sortKey === key
+        ? { sortDir: st.sortDir === 'asc' ? 'desc' : 'asc' }
+        : { sortKey: key, sortDir: key === 'risk' ? 'desc' : 'asc' }) : undefined,
+    }));
+
+    // ---- Months view. The schedule is (ticket, month, team) rows, so a ticket can change team
+    // between months; a ticket with no expected build window sits in the Not scheduled row.
+    const schedule = this.plan().schedule || { rows: [], unscheduled: [], released: [] };
+    const byId = {};
+    const keysOf = e => (e.ids.length ? e.ids : [e.name]);
+    shown.forEach(e => keysOf(e).forEach(id => { byId[id] = e; }));
+    const teamName = {};
+    const teamShort = {};
+    this.deliveryTeams().forEach(([id, name, short]) => { teamName[id] = name; teamShort[id] = short || name; });
+    // A ticket shows its team short, and names it in full in the tooltip.
+    const ticket = (e, id, team) => ({
+      name: e.name, id, spine: e.groupColor, open: e.open,
+      team: teamShort[team] || 'Unassigned',
+      soft: 'color-mix(in srgb, ' + e.groupColor + ' 45%, #fff)',
+      tip: e.name + ' (' + this.initiativeLabel(id) + ') · ' + e.laneLabel + ' · ' + e.proto + ' · ' + (teamName[team] || 'Unassigned'),
+    });
+
+    // Gantt: one row per initiative, its schedule rows collapsed into bars. Consecutive months with
+    // the same team are one bar, so a ticket that moves team mid-flight reads as two.
+    const now = new Date();
+    const nowIdx = months.indexOf(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][now.getMonth()] +
+      ' ' + String(now.getFullYear()).slice(2));
+    const span = months.length;
+    const pct = n => (n * 100 / span).toFixed(4) + '%';
+    // Effort is fixed for the whole build: small £1k a week, medium £2k, large £5k.
+    const EFFORT_WEEK = this.plan().meta.effortWeekGbp;
+    const POD_WEEK = this.plan().meta.podWeekGbp;
+    const WEEKS_PER_MONTH = this.plan().meta.weeksPerMonth;
+    const money = n => !n ? '–' : n >= 1000000 ? '£' + (n / 1000000).toFixed(n % 1000000 ? 1 : 0) + 'm' : '£' + Math.round(n / 1000) + 'k';
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const todayAt = nowIdx < 0 ? null : nowIdx + (now.getDate() - 0.5) / daysInMonth;
+    const todayLeft = todayAt === null ? '0%' : pct(todayAt);
+    const todayLabel = now.getDate() + ' ' + months[nowIdx < 0 ? 0 : nowIdx];
+    const FIRST_MONTH = 2026 * 12 + 8;          // Sep 2026, month index 0 of the series
+    const ganttGuides = months.map((label, i) => {
+      const abs = FIRST_MONTH + i;
+      const quarterStart = abs % 3 === 0;
+      return {
+        label, short: label.slice(0, 3),
+        bg: i === nowIdx ? 'color-mix(in srgb, var(--qs-150) 55%, #fff)' : (Math.floor(abs / 3) % 2 ? '#FAFBFC' : 'transparent'),
+        fg: i === nowIdx ? 'var(--qs-ink)' : 'var(--qs-550)',
+        // A heavier rule opens each calendar quarter; the rest of the months are hairlines.
+        edge: i > 0 && quarterStart ? '1px solid var(--qs-250)' : '1px solid transparent',
+        quarter: quarterStart ? 'Q' + (Math.floor((abs % 12) / 3) + 1) : '',
+      };
+    });
+    const ganttRows = shown.map(e => {
+      const key = keysOf(e).find(id => schedule.rows.some(r => r[0] === id));
+      const mine = key ? schedule.rows.filter(r => r[0] === key).slice().sort((a, b) => a[1] - b[1]) : [];
+      const bars = [];
+      mine.forEach(r => {
+        const last = bars[bars.length - 1];
+        if (last && last.team === r[2] && r[1] === last.end + 1) last.end = r[1];
+        else bars.push({ start: r[1], end: r[1], team: r[2] });
+      });
+      const parkedIn = list => (list || []).some(u => keysOf(e).indexOf(u[0]) >= 0);
+      const state = bars.length ? '' : (parkedIn(schedule.released) ? 'Released' : 'Not scheduled');
+      const signedOff = keysOf(e).some(id => approved.has(id));
+      const scheduledMonths = bars.reduce((sum, b) => sum + (b.end - b.start + 1), 0);
+      const effort = e.effort || 'medium';
+      const effortWeek = EFFORT_WEEK[effort] || EFFORT_WEEK.medium;
+      const capex = scheduledMonths * WEEKS_PER_MONTH * effortWeek;
+      // The bar's width is the duration and its fill height is the effort: a quarter of the bar for
+      // small, half for medium, the whole bar for large. Colour is the stage — full colour while a
+      // thing is building or in release planning, a tint while it is still scoping or prototyping,
+      // grey once it is released — and unapproved work stays pale and dashed whatever the stage.
+      const fillPct = { small: 25, medium: 50, large: 100 }[effort] || 50;
+      const live = e.proto === 'Building' || e.proto === 'Release planning';
+      const done = e.proto === 'Released';
+      const barFill = !signedOff ? 'color-mix(in srgb, ' + e.groupColor + ' 45%, #fff)'
+        : done ? 'var(--qs-300)'
+        : live ? e.groupColor
+        : 'color-mix(in srgb, ' + e.groupColor + ' 52%, #fff)';
+      // Unapproved work keeps a paler track as well as the dashed border, so the effort fill still
+      // reads against it without the bar looking funded.
+      const barTrack = done ? 'var(--qs-200)'
+        : 'color-mix(in srgb, ' + e.groupColor + (signedOff ? ' 22%' : ' 11%') + ', #fff)';
+      const tier = keysOf(e).map(id => tiers[id]).find(Boolean) || null;
+      const area = keysOf(e).map(id => areas[id]).find(Boolean) || null;
+      const tierStyle = this.tierStyle(tier);
+      // Traffic light. Blue once a system is deployed. A card with a roadmap profile shows its
+      // technical risk; one without shows its exposure instead — in build now or within two months
+      // with no profile is red, scheduled further out is orange, nothing scheduled yet is low.
+      const unprofiled = e.sortRisk === null || e.sortRisk === undefined;
+      const starts = bars.length ? bars[0].start : null;
+      const level = unprofiled ? (starts === null ? 1 : (starts <= Math.max(0, nowIdx) + 2 ? 3 : 2)) : e.sortRisk;
+      const light = e.proto === 'Released'
+        ? { bg: 'var(--qs-signal-blue)', label: 'Deployed' }
+        : [{ bg: 'var(--qs-signal-green)', label: 'None' }, { bg: 'var(--qs-signal-green)', label: 'Low' },
+           { bg: 'var(--qs-signal-orange)', label: 'Moderate' }, { bg: 'var(--qs-signal-red)', label: 'High' },
+           { bg: 'var(--qs-signal-red)', label: 'Critical' }][level];
+      const lit = signedOff || e.proto === 'Released';
+      const lightTip = light.label === 'Deployed' ? 'Deployed'
+        : (lit ? 'Technical risk: ' + light.label + (unprofiled ? ' (inferred, no roadmap profile)' : '')
+               : 'Not approved, so no status yet' + (unprofiled ? '' : ' — technical risk reads ' + light.label));
+      return {
+        name: e.name, id: e.idText, open: e.open, lane: e.laneLabel,
+        color: barTrack, barFill, fillHeight: fillPct + '%',
+        barBorder: signedOff ? 'none' : '1px dashed color-mix(in srgb, ' + e.groupColor + ' 65%, #fff)',
+        // The label sits on the fill only when the fill covers the bar.
+        barFg: !signedOff ? 'var(--qs-600)' : (fillPct === 100 && live ? 'var(--qs-ink-on-fill)' : 'var(--qs-ink)'),
+        effort, effortLabel: effort[0].toUpperCase() + effort.slice(1),
+        effortWeek,
+        approved: signedOff,
+        approvedTip: signedOff ? 'Investment committee approved' : 'Not yet approved by the investment committee',
+        stage: e.proto, stack: e.stack, spine: e.groupColor,
+        stageCode: ({ 'Scoping': 'SC', 'Prototype': 'PR', 'Building': 'BD', 'Release planning': 'RP', 'Released': 'RS' })[e.proto] || '––',
+        stageTip: e.proto || 'Stage not set',
+        stageSort: Math.max(0, this.plan().stages.indexOf(e.proto)),
+        tierBand: tier ? 'Priority ' + tier : 'No priority set',
+        teamGroup: (this.monthColumns().find(c => bars.length && c.teams.indexOf(bars[0].team) >= 0) || { name: 'Unassigned' }).name,
+        light: lit ? light.bg : '#fff', lightRing: lit ? 'rgba(26,39,46,0.14)' : 'var(--qs-250)',
+        lightFlag: true, lightTip,
+        tier: tier ? String(tier) : '–', tierBg: tierStyle.bg, tierFg: tierStyle.fg,
+        area: area ? area[0] : '–',
+        areaBand: area ? this.areaStyle(area[0]) : 'Area not set',
+        areaSort: area ? ['Q', 'P', 'R', 'S', 'I'].indexOf(area[0]) : 9,
+        areaTip: area ? this.areaStyle(area[0]) + ' (' + area[1] + ')' : 'Area not set',
+        capexRaw: capex,
+        capex: scheduledMonths ? money(capex) : '–',
+        capexFg: scheduledMonths ? 'var(--qs-ink)' : 'var(--qs-300)',
+        capexTip: scheduledMonths
+          ? scheduledMonths + (scheduledMonths === 1 ? ' month' : ' months') + ' scheduled · ' +
+            effort + ' effort, ' + (scheduledMonths * WEEKS_PER_MONTH) + ' weeks at ' + money(effortWeek)
+          : 'Nothing scheduled, so no capex yet',
+        tierTip: tier ? 'Tier ' + tier : 'Tier not set',
+        meta: e.laneLabel + ' · ' + e.proto,
+        state, stateFlag: !!state, hasBars: bars.length > 0,
+        stateFg: state === 'Released' ? 'var(--qs-signal-blue)' : 'var(--qs-550)',
+        // Released sorts first whether or not it still carries months in the schedule.
+        sort: e.proto === 'Released' ? -1 : (bars.length ? bars[0].start * 100 + (bars[bars.length - 1].end - bars[0].start) : 9999),
+        tierSort: tier || 9,
+        bars: bars.map(b => ({
+          left: pct(b.start), width: pct(b.end - b.start + 1),
+          label: teamShort[b.team] || '',
+          wide: (b.end - b.start + 1) >= 2 ? (teamShort[b.team] || '') : '',
+          tip: e.name + ' (' + e.idText + ') · ' + months[b.start] + ' – ' + months[b.end] + ' · ' + (teamName[b.team] || 'Unassigned') +
+            ' · ' + effort + ' effort at ' + money(effortWeek) + ' a week · ' + e.proto +
+            ' · ' + (signedOff ? 'approved' : 'not yet approved'),
+        })),
+      };
+    });
+    // Completed work heads either order; after that it is start month, or tier then start month.
+    const ganttSortKey = this.state.ganttSort;
+    const byStart = (a, b) => a.sort - b.sort || a.name.localeCompare(b.name);
+    // Area sorts Q, P, R, S, I — the order the business reads them in, not alphabetically.
+    ganttRows.sort(ganttSortKey === 'Priority' ? (a, b) => a.tierSort - b.tierSort || byStart(a, b)
+      : ganttSortKey === 'Area' ? (a, b) => a.areaSort - b.areaSort || a.tierSort - b.tierSort || byStart(a, b)
+      // Stage runs down the Kanban pipeline — scoping, prototype, building, release planning,
+      // released — not alphabetically, so the order reads as progress.
+      : ganttSortKey === 'Stage' ? (a, b) => a.stageSort - b.stageSort || a.tierSort - b.tierSort || byStart(a, b)
+      : byStart);
+    const ganttSortChips = ['Start', 'Priority', 'Area', 'Stage'].map(k => ({
+      label: k,
+      bg: ganttSortKey === k ? '#1A272E' : 'transparent',
+      fg: ganttSortKey === k ? '#fff' : 'var(--qs-600)',
+      pick: () => this.setState({ ganttSort: k }),
+    }));
+    const ganttScheduled = ganttRows.filter(r => r.hasBars).length;
+    const ganttCapex = ganttRows.reduce((sum, r) => sum + r.capexRaw, 0);
+    const ganttApprovedCapex = ganttRows.filter(r => r.approved).reduce((sum, r) => sum + r.capexRaw, 0);
+    const ganttMonths = ganttCapex / (POD_WEEK * WEEKS_PER_MONTH);
+    // Effort at a glance: how many scheduled initiatives sit at each rate.
+    const effortTally = ['small', 'medium', 'large'].map(k => ({
+      key: k, n: ganttRows.filter(r => r.hasBars && r.effort === k).length, week: EFFORT_WEEK[k],
+    }));
+    const ganttEffortCount = effortTally.filter(x => x.n).map(x => x.n + ' ' + x.key).join(', ') +
+      ' at ' + effortTally.map(x => money(x.week)).join(' / ') + ' a week';
+    const effortLegend = effortTally.map(x => ({
+      label: x.key[0].toUpperCase() + x.key.slice(1) + ' · ' + money(x.week) + '/wk',
+      fill: { small: '25%', medium: '50%', large: '100%' }[x.key],
+      tip: x.n + ' scheduled at ' + x.key + ' effort',
+    }));
+
+    // Gantt grouping. Each option gives a row its band and the order the bands sit in; None is one
+    // unlabelled band, so the gantt stays a flat list when you want it that way.
+    const ganttGroupKey = this.state.ganttGroup;
+    const bandOrder = {
+      Portfolio: laneDefs.map(l => l.label),
+      Priority: ['Priority 1', 'Priority 2', 'Priority 3', 'No priority set'],
+      Area: ['All of QS', 'Performance', 'Recruitment', 'Skills', 'Innovation', 'Area not set'],
+      Stage: stages.slice(),
+      Stack: ['QAS', 'Legacy', 'Other'],
+      Team: this.monthColumns().map(c => c.name),
+      None: [''],
+    }[ganttGroupKey] || [''];
+    const bands = {};
+    ganttRows.forEach(r => {
+      const key = { Portfolio: r.lane, Priority: r.tierBand, Area: r.areaBand, Stage: r.stage, Stack: r.stack, Team: r.teamGroup, None: '' }[ganttGroupKey] || '';
+      (bands[key] = bands[key] || []).push(r);
+    });
+    const ganttBands = bandOrder.concat(Object.keys(bands).filter(k => bandOrder.indexOf(k) < 0))
+      .filter(k => bands[k] && bands[k].length)
+      .map(k => ({
+        label: k, rows: bands[k], dot: bands[k][0].spine,
+        showHead: ganttGroupKey !== 'None',
+        count: bands[k].length + (bands[k].length === 1 ? ' item' : ' items'),
+        capex: money(bands[k].reduce((sum, r) => sum + r.capexRaw, 0)),
+      }));
+    const ganttGroupChips = ['Portfolio', 'Priority', 'Area', 'Stage', 'Team', 'Stack', 'None'].map(k => ({
+      label: k,
+      bg: ganttGroupKey === k ? '#1A272E' : 'transparent',
+      fg: ganttGroupKey === k ? '#fff' : 'var(--qs-600)',
+      pick: () => this.setState({ ganttGroup: k }),
+    }));
+
+    const lanes = laneDefs.map(l => {
+      const mine = shown.filter(e => e.lane === l.key);
+      return {
+        label: l.label, color: colorOf[l.group], count: mine.length,
+        countLabel: mine.length + (mine.length === 1 ? ' item' : ' items'),
+        cols: stageIdx.map(i => ({
+          cards: mine.filter(e => e.stage === i).map(e => ({
+            name: e.name,
+            idLabel: e.ids.map(id => this.initiativeLabel(id)).join(' · '),
+            tip: e.name + (e.ids.length ? ' (' + e.ids.map(id => this.initiativeLabel(id)).join(', ') + ')' : ' (no initiative number)') +
+              (e.ids.length > 1 ? ', duplicate epics merged' : '') +
+              ' → ' + (e.products.length ? e.products.join(' + ') : 'no roadmap profile yet'),
+            hasOwner: !!e.owner, noOwner: !e.owner,
+            owner: e.owner || '', ownerBg: e.leaderBg, ownerFg: e.leaderFg, ownerName: e.leader, open: e.open,
+            stackTip: 'Stack: ' + e.stack, stackBg: e.stackBg, stackBorder: e.stackBorder,
+            months: e.months, buildTip: 'Expected build: ' + e.discoveryLabel,
+          })),
+        })),
+      };
+    }).filter(l => l.count > 0);
+
+    const groupChips = defs.map(d => {
+      const on = active.indexOf(d.key) >= 0;
+      return {
+        label: d.label, onFlag: on ? 'yes' : 'no',
+        count: epics.filter(e => e.groups.indexOf(d.key) >= 0).length,
+        dot: d.color,
+        bg: on ? d.color : '#fff', fg: 'var(--qs-ink)',
+        border: on ? d.color : 'var(--qs-150)',
+        toggle: () => this.setState(s => ({
+          groups: s.groups.indexOf(d.key) >= 0 ? s.groups.filter(g => g !== d.key) : s.groups.concat([d.key]),
+        })),
+      };
+    });
+
+    const stackChips = ['All', 'QAS', 'Legacy', 'Other'].map(k => ({
+      label: k,
+      bg: stack === k ? '#1A272E' : 'transparent',
+      fg: stack === k ? '#fff' : 'var(--qs-600)',
+      pick: () => this.setState({ stack: k }),
+    }));
+
+    // ---- Detail page: the selected card on the left, its weekly updates on the right
+    const sel = this.state.selected;
+    const detail = sel ? epics.find(e => e.key === sel || e.ids.indexOf(sel) >= 0) || null : null;
+    const updates = this.plan().updates || { weeks: [], entries: [] };
+    const refs = detail ? (detail.ids.length ? detail.ids : [detail.name]) : [];
+    const mine = updates.entries.filter(en => en.epics.some(x => refs.indexOf(x) >= 0));
+    const reviewed = detail ? (updates.reviews || []).filter(r => r.epics.some(x => refs.indexOf(x) >= 0)) : [];
+    const reviews = reviewed.map(r => ({
+      text: r.text, owner: r.owner || '', timing: r.timing || '',
+      shared: r.epics.length > 1 ? 'Shared with ' + r.epics.filter(x => refs.indexOf(x) < 0).join(', ') : '',
+    }));
+    const statusStyle = st => {
+      const k = (st || '').toLowerCase();
+      if (['shipped', 'done', 'released'].indexOf(k) >= 0) return { bg: 'var(--qs-750)', fg: '#fff' };
+      if (['behind', 'delivered late', 'on hold'].indexOf(k) >= 0) return { bg: 'color-mix(in srgb, var(--qs-orange) 16%, #fff)', fg: '#B34100' };
+      if (k === 'on track') return { bg: 'var(--qs-150)', fg: 'var(--qs-ink)' };
+      return { bg: 'var(--qs-250)', fg: 'var(--qs-ink)' };
+    };
+    const phaseStyle = ph => this.protoStyle(ph) || {
+      Done: this.protoStyle('Released'),
+      'Build Ready': { bg: 'var(--qs-250)', fg: 'var(--qs-ink)' },
+      'In Progress': { bg: 'var(--qs-400)', fg: 'var(--qs-ink)' },
+    }[ph] || { bg: 'var(--qs-150)', fg: 'var(--qs-ink)' };
+    const detailWeeks = detail ? updates.weeks.map(w => {
+      const here = mine.filter(en => en.week === w.week);
+      const sum = here.find(en => en.kind === 'summary');
+      const hyp = here.find(en => en.kind === 'hypothesis');
+      const items = here.filter(en => en.kind === 'item').map(en => {
+        const ss = statusStyle(en.status);
+        return {
+          title: en.title, team: en.team, status: en.status || '', statusBg: ss.bg, statusFg: ss.fg,
+          text: en.text || '', bullets: (en.bullets || []).map(b => ({ text: b })), spine: detail.groupColor,
+        };
+      });
+      const ps = sum ? phaseStyle(sum.phase) : { bg: '', fg: '' };
+      return {
+        label: 'Week ' + w.week, dates: w.dates,
+        phase: sum ? sum.phase : '', phaseBg: ps.bg, phaseFg: ps.fg,
+        summary: sum ? sum.text : '',
+        signal: hyp ? hyp.signal : '', hypothesis: hyp ? hyp.text : '',
+        items, risks: here.filter(en => en.kind === 'risk').map(en => ({ team: en.team, text: en.text })),
+        empty: here.length === 0,
+        inferredNote: w.mapping === 'inferred' && items.length
+          ? 'Mapped by subject: the Week ' + w.week + ' report predates epic labels.' : '',
+      };
+    }) : [];
+    const itemCount = mine.filter(en => en.kind === 'item').length;
+    const weeksWith = detailWeeks.filter(w => !w.empty).length;
+
+    const viewChips = ['Gantt', 'Kanban', 'Table'].map(k => ({
+      label: k,
+      bg: view === k ? '#1A272E' : 'transparent',
+      fg: view === k ? '#fff' : 'var(--qs-600)',
+      pick: () => this.setState({ view: k }),
+    }));
+
+    return {
+      products: shown,
+      weekLabel: this.weekLabel(),
+      tableRows, tableHeads,
+      stageCount: stageIdx.length,
+      hideReleasedFlag: hideReleased ? 'yes' : 'no',
+      hideBg: hideReleased ? 'var(--qs-ink)' : '#fff',
+      hideFg: hideReleased ? '#fff' : 'var(--qs-ink)',
+      hideBorder: hideReleased ? 'var(--qs-ink)' : 'var(--qs-150)',
+      toggleReleased: () => this.setState(st => ({ hideReleased: !st.hideReleased })),
+      groupChips, stackChips, viewChips, lanes,
+      stageHeads: stageIdx.map(i => ({ label: stages[i], count: shown.filter(e => e.stage === i).length })),
+      ganttRows, ganttGuides, ganttBands, ganttGroupChips, ganttSortChips, effortLegend,
+      todayLeft, todayLabel, todayFlag: todayAt === null ? 'no' : 'yes',
+      ganttCount: ganttScheduled + ' of ' + ganttRows.length + ' initiatives scheduled · ' +
+        ganttEffortCount + ' · ' + money(ganttApprovedCapex) + ' approved by the investment committee, ' +
+        money(ganttCapex - ganttApprovedCapex) + ' not yet',
+      ganttCapexTotal: money(ganttCapex),
+      isGantt: !detail && view === 'Gantt',
+      isDetail: !!detail,
+      isList: !detail,
+      isTable: !detail && view === 'Table',
+      isKanban: !detail && view === 'Kanban',
+      showColumns: !!detail,
+      columnCards: detail ? [detail] : shown,
+      colAlign: detail ? 'flex-start' : 'stretch',
+      colMinWidth: detail ? '0' : 'max-content',
+      detailWeeks, reviews, hasReviews: reviews.length > 0,
+      detailName: detail ? detail.name : '',
+      detailColor: detail ? detail.groupColor : '',
+      detailMeta: detail ? [detail.idText, detail.laneLabel, detail.proto].join(' · ') : '',
+      detailCount: detail ? itemCount + (itemCount === 1 ? ' update' : ' updates') + ' in ' + weeksWith + ' of ' + updates.weeks.length + ' weekly reports' : '',
+      backLabel: 'Back to ' + view,
+      closeDetail: () => this.closeDetail(),
+      shownLabel: shown.length + ' of ' + epics.length + ' projects',
+      legend: [
+        { label: 'QAS stack', bg: 'var(--qs-750)' },
+        { label: 'Legacy', bg: 'var(--qs-250)' },
+        { label: 'Other', bg: '#fff', ring: 'var(--qs-400)' },
+        { label: 'Heavy maintenance', bg: 'color-mix(in srgb, var(--qs-amber) 35%, #fff)', ring: 'var(--qs-250)' },
+        { label: 'Placeholder', bg: 'repeating-linear-gradient(135deg, var(--qs-600) 0 2px, var(--qs-250) 2px 4px)' },
+      ].map(l => ({ ring: 'transparent', ...l })),
+      rowLabels: [
+        { label: 'Stack', h: 40 },
+        { label: 'Product leader', h: 46 },
+        { label: 'Data leader', h: 46 },
+        { label: 'Engineering leader', h: 46 },
+        { label: 'Product description', h: 84 },
+        { label: 'Epic', h: 58 },
+        { label: 'Expected build', h: 58 },
+        { label: 'Data readiness', h: 48 },
+        { label: 'Design system', h: 48 },
+        { label: 'Engineering', h: 48 },
+        { label: 'Stage', h: 48 },
+        { label: 'Ready check', h: 48 },
+        { label: 'Technical risk', h: 96 },
+        { label: 'Commentary', h: 132 },
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>

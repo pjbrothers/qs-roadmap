@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>People</title>
+<script src="data/plan.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="palette.css" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:var(--qs-page); }
+  * { box-sizing:border-box; }
+  a { color:var(--qs-blue); text-decoration:none; }
+  a:hover { color:var(--qs-ink); }
+</style>
+</helmet>
+
+<div style="font-family:'PP Telegraf','Manrope',system-ui,sans-serif; background:#F2F5F6; color:#1A272E; padding:34px 40px 46px; min-height:100vh;">
+
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:32px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <img src="uploads/qs-logo.png" alt="QS" style="width:46px; height:46px; object-fit:contain;">
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:2.4px; text-transform:uppercase; color:var(--qs-600);">{{ weekLabel }}</div>
+        <div style="font-size:31px; font-weight:800; letter-spacing:-0.6px; line-height:1.1; margin-top:4px;">People</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+      <div data-page-switch style="display:flex; gap:4px; background:#fff; border-radius:999px; padding:4px;">
+        <a href="index.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Delivery Plan</a>
+        <a href="weekly.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Reports</a>
+        <a href="teams.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Teams</a>
+        <span style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:800; background:var(--qs-ink); color:#fff;">People</span>
+        <a href="transformation.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Transformation</a>
+        <a href="architecture.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Architecture</a>
+        <a href="data.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Data</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:26px; align-items:center; flex-wrap:wrap; margin-top:26px; padding:14px 18px; background:#fff; border-radius:16px;">
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Portfolio</div>
+      <div style="display:flex; gap:7px; flex-wrap:wrap;">
+        <sc-for list="{{ groupChips }}" as="c" hint-placeholder-count="6">
+          <div data-portfolio-chip="{{ c.label }}" data-on="{{ c.onFlag }}" onClick="{{ c.toggle }}" style="cursor:pointer; user-select:none; display:flex; align-items:center; gap:7px; border-radius:999px; padding:7px 14px; font-size:12px; font-weight:700; background:{{ c.bg }}; color:{{ c.fg }}; border:1.5px solid {{ c.border }}; transition:all .14s;" style-hover="opacity:0.86;">
+            <span style="width:9px; height:9px; border-radius:3px; background:{{ c.dot }};"></span>{{ c.label }}
+            <span style="font-size:11px; font-weight:800; opacity:0.6;">{{ c.count }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Area</div>
+      <div style="display:flex; gap:4px; background:#F2F5F6; border-radius:999px; padding:4px;">
+        <sc-for list="{{ areaChips }}" as="a" hint-placeholder-count="6">
+          <div data-area-chip="{{ a.key }}" onClick="{{ a.pick }}" title="{{ a.title }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:6px 13px; font-size:12px; font-weight:700; background:{{ a.bg }}; color:{{ a.fg }}; transition:all .14s;">{{ a.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-550);">Stack</div>
+      <div style="display:flex; gap:4px; background:#F2F5F6; border-radius:999px; padding:4px;">
+        <sc-for list="{{ stackChips }}" as="s" hint-placeholder-count="4">
+          <div data-stack-chip="{{ s.label }}" onClick="{{ s.pick }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; background:{{ s.bg }}; color:{{ s.fg }}; transition:all .14s;">{{ s.label }}</div>
+        </sc-for>
+      </div>
+    </div>
+    <div data-hide-released="{{ hideReleasedFlag }}" onClick="{{ toggleReleased }}" style="cursor:pointer; user-select:none; border-radius:999px; padding:7px 15px; font-size:12px; font-weight:700; background:{{ hideBg }}; color:{{ hideFg }}; border:1.5px solid {{ hideBorder }}; transition:all .14s;" style-hover="opacity:0.86;">Hide Released</div>
+    <div style="margin-left:auto; font-size:12px; font-weight:700; color:var(--qs-600);">{{ shownLabel }}</div>
+  </div>
+
+  <div style="display:flex; gap:16px; align-items:flex-start; margin-top:20px;">
+    <sc-for list="{{ columns }}" as="col" hint-placeholder-count="3">
+      <div data-people-column="{{ col.key }}" style="flex:1 1 0; min-width:0; background:#fff; border-radius:16px; padding:14px 14px 16px; box-shadow:0 1px 2px rgba(26,39,46,0.06);">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding-bottom:10px; border-bottom:1.5px solid var(--qs-150);">
+          <div style="font-size:12px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase;">{{ col.label }}</div>
+          <div style="font-size:10.5px; font-weight:700; color:var(--qs-550);">{{ col.count }}</div>
+        </div>
+
+        <sc-for list="{{ col.people }}" as="p" hint-placeholder-count="5">
+          <div data-person="{{ p.name }}" style="margin-top:14px;">
+            <div style="display:flex; align-items:center; gap:9px;">
+              <div style="flex:0 0 auto; width:24px; height:24px; border-radius:999px; background:{{ p.bg }}; color:{{ p.fg }}; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center;">{{ p.initials }}</div>
+              <div style="font-size:13.5px; font-weight:800; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ p.name }}</div>
+              <div style="flex:0 0 auto; font-size:10.5px; font-weight:700; color:var(--qs-600); background:var(--qs-150); border-radius:999px; padding:2px 8px;">{{ p.count }}</div>
+            </div>
+
+            <div style="margin:7px 0 0 12px; display:flex; flex-direction:column; gap:6px;">
+              <sc-for list="{{ p.cards }}" as="k" hint-placeholder-count="3">
+                <a data-people-card href="{{ k.href }}" title="{{ k.tip }}" style="display:flex; align-items:stretch; gap:8px; min-width:0; background:#fff; border:1px solid var(--qs-150); border-left:none; border-radius:0 8px 8px 0; overflow:hidden; padding:0 8px 0 0; color:var(--qs-ink); transition:transform .12s, box-shadow .12s;" style-hover="transform:translateY(-1px); box-shadow:0 6px 14px rgba(26,39,46,0.10);">
+                  <span style="flex:0 0 auto; width:4px; background:{{ k.color }};"></span>
+                  <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:4px; padding:7px 0 6px;">
+                    <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                      <div style="flex:1 1 auto; min-width:0; font-size:12.5px; font-weight:800; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ k.name }}</div>
+                      <span title="{{ k.stackTip }}" style="flex:0 0 auto; width:10px; height:10px; border-radius:3px; background:{{ k.stackBg }}; box-shadow:inset 0 0 0 1px {{ k.stackBorder }};"></span>
+                      <div style="flex:0 0 auto; font-size:9.5px; font-weight:800; letter-spacing:0.6px; color:var(--qs-600);">{{ k.id }}</div>
+                      <span title="{{ k.tierTip }}" style="flex:0 0 auto; width:15px; height:15px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; background:{{ k.tierBg }}; color:{{ k.tierFg }};">{{ k.tier }}</span>
+                      <span title="{{ k.areaTip }}" style="flex:0 0 auto; width:15px; height:15px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; background:#fff; color:var(--qs-ink); box-shadow:inset 0 0 0 1px var(--qs-250);">{{ k.area }}</span>
+                    </div>
+                    <div title="Expected build: {{ k.buildLabel }}" style="display:flex; gap:1px;">
+                      <sc-for list="{{ k.months }}" as="m" hint-placeholder-count="16">
+                        <div style="flex:1 1 0; height:3px; border-radius:1px; background:{{ m.bg }};"></div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:16px; font-size:11.5px; font-weight:600; color:var(--qs-550);">Product, data and engineering leads come from the initiative where one is set, and from its roadmap product profile otherwise. An initiative appears in all three columns, once under each of its leads.</div>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1100}}">
+class Component extends DCLogic {
+  state = { groups: [], stack: 'All', area: 'All', hideReleased: false };
+
+  plan() {
+    return window.QS_PLAN || {};
+  }
+
+  weekLabel() {
+    const d = new Date();
+    const u = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    u.setUTCDate(u.getUTCDate() + 4 - (u.getUTCDay() || 7));
+    const week = Math.ceil(((u - Date.UTC(u.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+    return 'Week ' + week + ', ' + u.getUTCFullYear();
+  }
+
+  initials(name) {
+    if (!name || name === 'TBC' || name === 'Unassigned') return '–';
+    return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  }
+
+  tierStyle(tier) {
+    return {
+      1: { bg: 'var(--qs-ink)', fg: '#fff' },
+      2: { bg: 'var(--qs-450)', fg: 'var(--qs-ink)' },
+      3: { bg: 'var(--qs-150)', fg: 'var(--qs-600)' },
+    }[tier] || { bg: 'transparent', fg: 'var(--qs-300)' };
+  }
+
+  areaName(letter) {
+    return { Q: 'All of QS', S: 'Skills', R: 'Recruitment', I: 'Innovation', P: 'Performance' }[letter] || '';
+  }
+
+  // Every initiative, with the three leads resolved the way the delivery plan resolves them: the
+  // initiative's own names where it has them, the roadmap product's otherwise.
+  cards() {
+    const plan = this.plan();
+    const months = plan.meta.months;
+    const laneOf = {}; (plan.lanes || []).forEach(l => { laneOf[l.key] = l; });
+    const colorOf = {}; (plan.portfolios || []).forEach(g => { colorOf[g.key] = g.color; });
+    const productOf = {}; (plan.products || []).forEach(p => { productOf[p.key] = p; });
+    const stages = plan.stages || [];
+    const stackStyle = {
+      QAS: { bg: 'var(--qs-750)', border: 'var(--qs-750)' },
+      Legacy: { bg: 'var(--qs-250)', border: 'var(--qs-250)' },
+      Other: { bg: '#fff', border: 'var(--qs-400)' },
+    };
+
+    return (plan.initiatives || []).map(i => {
+      const lane = laneOf[i.lane] || { label: '', group: '' };
+      const color = colorOf[lane.group] || 'var(--qs-250)';
+      const profile = i.products.length ? productOf[i.products[0]] : null;
+      const owner = i.owner ? (plan.owners[i.owner] || {}) : null;
+      const leads = {
+        product: (i.leads && i.leads.product) || (i.leads ? 'Unassigned' : (owner ? owner.name : 'Unassigned')),
+        data: i.leads ? (i.leads.data || 'TBC') : (profile ? profile.leads.data || 'TBC' : 'TBC'),
+        engineering: i.leads ? (i.leads.engineering || 'TBC') : (profile ? profile.leads.engineering || 'TBC' : 'TBC'),
+      };
+      const stack = profile ? profile.stack : (/^QAS\b/.test(i.name) ? 'QAS' : 'Other');
+      const released = stages[i.stage] === 'Released';
+      const window = 'buildWindow' in i ? i.buildWindow : (profile ? profile.buildWindow : null);
+      const ranges = window ? (typeof window[0] === 'number' ? [window] : window) : [];
+      const inWindow = m => ranges.some(r => m >= r[0] && m <= r[1]);
+      const key = i.ids.length ? i.ids[0] : i.name;
+      const ss = stackStyle[stack] || stackStyle.Other;
+      return {
+        key, leads, stack, released,
+        group: lane.group,
+        name: i.name,
+        id: i.ids.length ? i.ids.map(x => x.replace(/^EP-/, 'IN-')).join(' · ') : 'No ID',
+        href: 'index.html#' + encodeURIComponent(key),
+        color,
+        stackBg: ss.bg, stackBorder: ss.border, stackTip: 'Stack: ' + stack,
+        tier: i.tier ? String(i.tier) : '–',
+        tierBg: this.tierStyle(i.tier).bg, tierFg: this.tierStyle(i.tier).fg,
+        tierTip: i.tier ? 'Priority ' + i.tier : 'No priority set',
+        area: i.area ? i.area.letter : '–',
+        areaLetter: i.area ? i.area.letter : '',
+        areaTip: i.area ? this.areaName(i.area.letter) + ' (' + i.area.context + ')' : 'Area not set',
+        months: months.map((m, n) => ({ bg: !released && inWindow(n) ? color : 'var(--qs-150)' })),
+        buildLabel: released ? 'Released' : (ranges.length
+          ? ranges.map(r => (r[0] === r[1] ? months[r[0]] : months[r[0]] + ' – ' + months[r[1]])).join(' · ')
+          : 'Build window TBC'),
+        tip: i.name + ' · ' + lane.label + ' · ' + (stages[i.stage] || ''),
+        sort: (i.tier || 9) * 100 + (ranges.length ? ranges[0][0] : 99),
+      };
+    });
+  }
+
+  renderVals() {
+    const plan = this.plan();
+    const all = this.cards();
+    const active = this.state.groups;
+    const stack = this.state.stack;
+    const area = this.state.area;
+    const hideReleased = this.state.hideReleased;
+
+    const shown = all.filter(c =>
+      (active.length === 0 || active.indexOf(c.group) >= 0) &&
+      (stack === 'All' || c.stack === stack) &&
+      (area === 'All' || c.areaLetter === area) &&
+      !(hideReleased && c.released));
+
+    // One column per role: its people, each with the initiatives they carry.
+    const roles = [['product', 'Product'], ['data', 'Data'], ['engineering', 'Engineering']];
+    const columns = roles.map(([key, label]) => {
+      const byPerson = {};
+      shown.forEach(c => {
+        const who = c.leads[key] || 'TBC';
+        (byPerson[who] = byPerson[who] || []).push(c);
+      });
+      const people = Object.keys(byPerson).map(name => {
+        const cards = byPerson[name].slice().sort((a, b) => a.sort - b.sort || a.name.localeCompare(b.name));
+        const placeholder = name === 'TBC' || name === 'Unassigned';
+        return {
+          name, cards,
+          initials: this.initials(name),
+          bg: placeholder ? 'var(--qs-150)' : 'var(--qs-600)',
+          fg: placeholder ? 'var(--qs-600)' : '#fff',
+          count: cards.length + '',
+          sort: (placeholder ? 1 : 0) * 1000 - cards.length,
+        };
+      }).sort((a, b) => a.sort - b.sort || a.name.localeCompare(b.name));
+      const named = people.filter(p => p.name !== 'TBC' && p.name !== 'Unassigned').length;
+      return { key, label, people, count: named + (named === 1 ? ' person' : ' people') };
+    });
+
+    const groupChips = (plan.portfolios || []).map(g => {
+      const on = active.indexOf(g.key) >= 0;
+      return {
+        label: g.label, onFlag: on ? 'yes' : 'no', dot: g.color,
+        count: all.filter(c => c.group === g.key).length,
+        bg: on ? g.color : '#fff', fg: 'var(--qs-ink)', border: on ? g.color : 'var(--qs-150)',
+        toggle: () => this.setState(s => ({
+          groups: s.groups.indexOf(g.key) >= 0 ? s.groups.filter(x => x !== g.key) : s.groups.concat([g.key]),
+        })),
+      };
+    });
+    const stackChips = ['All', 'QAS', 'Legacy', 'Other'].map(k => ({
+      label: k,
+      bg: stack === k ? '#1A272E' : 'transparent', fg: stack === k ? '#fff' : 'var(--qs-600)',
+      pick: () => this.setState({ stack: k }),
+    }));
+    const areaChips = ['All', 'Q', 'P', 'R', 'S', 'I'].map(k => ({
+      key: k, label: k,
+      title: k === 'All' ? 'Every area' : this.areaName(k),
+      bg: area === k ? '#1A272E' : 'transparent', fg: area === k ? '#fff' : 'var(--qs-600)',
+      pick: () => this.setState({ area: k }),
+    }));
+
+    return {
+      weekLabel: this.weekLabel(),
+      columns, groupChips, stackChips, areaChips,
+      shownLabel: shown.length + ' of ' + all.length + ' initiatives',
+      hideReleasedFlag: hideReleased ? 'yes' : 'no',
+      hideBg: hideReleased ? 'var(--qs-ink)' : '#fff',
+      hideFg: hideReleased ? '#fff' : 'var(--qs-ink)',
+      hideBorder: hideReleased ? 'var(--qs-ink)' : 'var(--qs-150)',
+      toggleReleased: () => this.setState(s => ({ hideReleased: !s.hideReleased })),
+    };
+  }
+}
+</script>
+</body>
+</html>

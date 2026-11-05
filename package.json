@@ -1,0 +1,12 @@
+{
+  "name": "qs-roadmap",
+  "private": true,
+  "description": "QS 2027 Data and Engineering Delivery Plan. All data lives in data/plan.js. npm run build (report PDF), build:gantt (A3 gantt), build:weekly (16:9 weekly slides), build:single (one-file review copy), build:architecture (16:9 architecture slide).",
+  "scripts": {
+    "build": "node scripts/build-report.mjs",
+    "build:single": "node scripts/build-single-file.mjs",
+    "build:gantt": "node scripts/build-gantt.mjs",
+    "build:weekly": "node scripts/build-weekly.mjs",
+    "build:architecture": "node scripts/build-architecture.mjs"
+  }
+}

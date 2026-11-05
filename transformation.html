@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tech Transformation by Quarter</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="palette.css" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#F2F5F6; }
+  * { box-sizing:border-box; }
+  a { color:#2068C0; text-decoration:none; }
+  a:hover { color:#1B559E; }
+  .rail::-webkit-scrollbar { height:12px; }
+  .rail::-webkit-scrollbar-track { background:#E6ECEE; border-radius:999px; }
+  .rail::-webkit-scrollbar-thumb { background:#B6C3C9; border-radius:999px; }
+</style>
+</helmet>
+
+<div style="font-family:'PP Telegraf','Manrope',system-ui,sans-serif; background:#F2F5F6; color:#1A272E; padding:30px 34px 20px; min-height:100vh; display:flex; flex-direction:column;">
+
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:32px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <img src="uploads/qs-logo.png" alt="QS" style="width:46px; height:46px; object-fit:contain;">
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:2.4px; text-transform:uppercase; color:#5C6B75;">{{ weekLabel }}</div>
+        <div style="font-size:31px; font-weight:800; letter-spacing:-0.6px; line-height:1.1; margin-top:4px;">Tech Transformation by Quarter</div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;">
+          <a data-download href="qs-roadmap-report.pdf" download="QS 2027 Data and Engineering Delivery Plan report.pdf" title="PDF report, built with npm run build" style="display:flex; align-items:center; gap:8px; background:var(--qs-ink); color:#fff; border-radius:999px; padding:8px 16px; font-size:12px; font-weight:800; transition:opacity .14s;" style-hover="opacity:0.86;">
+        <span style="font-size:13px; line-height:1;">↓</span>Download report
+      </a>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+      <div data-page-switch style="display:flex; gap:4px; background:#fff; border-radius:999px; padding:4px;">
+        <a href="index.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Delivery Plan</a>
+        <a href="weekly.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Reports</a>
+        <a href="teams.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Teams</a>
+        <a href="people.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">People</a>
+        <span style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:800; background:var(--qs-ink); color:#fff;">Transformation</span>
+        <a href="architecture.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Architecture</a>
+              <a href="data.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Data</a>
+</div>
+    </div>
+  </div>
+
+  <div data-transformation style="flex:1 1 auto; display:flex; flex-direction:column;">
+  <div style="display:flex; gap:20px; align-items:center; margin-top:24px; padding:13px 18px; background:#fff; border-radius:16px; flex-wrap:wrap;">
+    <div data-portfolio-filter style="display:flex; align-items:center; gap:9px;">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:#8A99A3;">Portfolio</div>
+      <div style="display:flex; gap:7px; flex-wrap:wrap;">
+        <sc-for list="{{ groupChips }}" as="c" hint-placeholder-count="5">
+          <div onClick="{{ c.toggle }}" style="cursor:pointer; user-select:none; display:flex; align-items:center; gap:7px; border-radius:999px; padding:8px 14px; font-size:12px; font-weight:700; background:{{ c.bg }}; color:{{ c.fg }}; border:1.5px solid {{ c.border }}; transition:all .14s;" style-hover="opacity:0.86;">
+            <span style="width:9px; height:9px; border-radius:3px; background:{{ c.dot }};"></span>{{ c.label }}
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:9px; font-size:12px; font-weight:700; color:#5C6B75;">
+      <span style="width:16px; height:16px; border-radius:5px; background:#1A272E;"></span>New or replatformed
+    </div>
+    <div style="display:flex; align-items:center; gap:9px; font-size:12px; font-weight:700; color:#5C6B75;">
+      <span style="width:16px; height:16px; border-radius:5px; border:1.5px dashed #9AA8B0;"></span>Retired
+    </div>
+    <div style="margin-left:auto; display:flex; gap:22px;">
+      <div style="text-align:right;">
+        <div style="font-size:21px; font-weight:800; letter-spacing:-0.4px;">{{ totalNew }}</div>
+        <div style="font-size:10.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:#8A99A3;">Arriving</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:21px; font-weight:800; letter-spacing:-0.4px; color:#A9301F;">{{ totalRetired }}</div>
+        <div style="font-size:10.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:#8A99A3;">Retired</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:22px; flex:1 1 auto; display:flex; flex-direction:column;">
+    <div style="flex:1 1 auto; display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:7px; align-items:stretch;">
+      <sc-for list="{{ quarters }}" as="q" hint-placeholder-count="12">
+        <div style="min-width:0; display:flex; flex-direction:column;">
+
+          <div style="background:{{ q.headBg }}; color:{{ q.headFg }}; border-radius:10px; padding:8px 9px; text-align:center;">
+            <div style="font-size:11.5px; font-weight:800; letter-spacing:0.4px;">{{ q.label }}</div>
+            <div style="font-size:8.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; opacity:0.78; margin-top:2px;">{{ q.era }}</div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; justify-content:flex-end; gap:6px; min-height:300px; padding:11px 0 8px;">
+            <sc-for list="{{ q.live }}" as="i" hint-placeholder-count="2">
+              <div style="background:#fff; border-radius:9px; padding:8px 9px; box-shadow:0 1px 2px rgba(26,39,46,0.07); transition:transform .14s, box-shadow .14s;" style-hover="transform:translateY(-3px); box-shadow:0 12px 26px rgba(26,39,46,0.15);">
+                <div style="display:flex; align-items:flex-start; gap:7px;">
+                  <span style="flex:0 0 auto; width:3px; height:26px; border-radius:999px; background:{{ i.bg }};"></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:10.5px; font-weight:800; line-height:1.25; text-wrap:pretty;">{{ i.name }}</div>
+                    <div style="font-size:8.5px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#8A99A3; margin-top:2px;">{{ i.note }}</div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="height:3px; background:#1A272E; border-radius:999px;"></div>
+
+          <div style="flex:1 1 auto; display:flex; flex-direction:column; gap:6px; min-height:170px; padding:11px 0 0;">
+            <sc-for list="{{ q.retired }}" as="i" hint-placeholder-count="1">
+              <div style="border:1.5px dashed #C3CFD5; border-radius:9px; padding:8px 9px; background:rgba(255,255,255,0.5); transition:transform .14s;" style-hover="transform:translateY(-3px); background:#fff;">
+                <div style="display:flex; align-items:flex-start; gap:7px;">
+                  <span style="flex:0 0 auto; width:3px; height:26px; border-radius:999px; background:{{ i.bg }}; opacity:0.45;"></span>
+                  <div style="min-width:0;">
+                    <div style="font-size:10.5px; font-weight:800; line-height:1.25; color:#5C6B75; text-decoration:line-through; text-wrap:pretty;">{{ i.name }}</div>
+                    <div style="font-size:8.5px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; color:#9AA8B0; margin-top:2px;">{{ i.note }}</div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div data-quarter-foot style="position:sticky; bottom:12px; z-index:2; margin-top:11px; background:{{ q.headBg }}; color:{{ q.headFg }}; border-radius:10px; padding:7px 9px; text-align:center; box-shadow:0 -6px 0 6px #F2F5F6;">
+            <div style="font-size:11.5px; font-weight:800; letter-spacing:0.4px;">{{ q.label }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="margin-top:18px; font-size:12px; font-weight:600; color:#8A99A3;">Inferred from the current product portfolio and the QAS transition plan. Quarters are calendar quarters.</div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  state = { groups: [] };
+
+  // ISO week of today, e.g. "Week 38, 2026". Shown in place of the old "QS Technology" eyebrow.
+  weekLabel() {
+    const now = new Date();
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const week = Math.ceil(((d - Date.UTC(d.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+    return 'Week ' + week + ', ' + d.getUTCFullYear();
+  }
+
+  groupDefs() {
+    return [
+      { key: 'Core', label: 'Core', color: 'var(--qs-amber)' },
+      { key: 'SI', label: 'Sector Intelligence', color: 'var(--qs-yellow)' },
+      { key: 'DE', label: 'D&E', color: 'var(--qs-orange)' },
+      { key: 'US', label: 'University Services', color: 'var(--qs-lightblue)' },
+    ];
+  }
+
+  raw() {
+    // [quarterIdx, 'new'|'retired', name, note, groupKey]  — quarterIdx 0 = Q1 2025
+    return [
+      [0, 'new', 'QAS Auth', 'Released', 'Core'],
+      [0, 'new', 'QAS Factfiles', 'Released', 'SI'],
+      [0, 'retired', 'Legacy MyQS login', 'Folded into QAS Auth', 'Core'],
+      [1, 'new', 'QAS MyQS 1.0', 'Released', 'Core'],
+      [1, 'new', 'TU Career Match microsite', 'Released', 'DE'],
+      [1, 'retired', 'HIQ auth', 'Migrated to QAS Auth', 'Core'],
+      [2, 'new', '1 Mentor IBM', 'Building', 'SI'],
+      [2, 'new', 'Aurora implementation', 'Release planning', 'US'],
+      [2, 'retired', 'QAS MyQS legacy', 'Superseded by MyQS 1.0', 'Core'],
+      [3, 'new', 'QS Stars (beta)', 'BLR1', 'SI'],
+      [3, 'new', '1 Mentor multilingual', 'Building', 'SI'],
+      [3, 'retired', 'Manual Stars scoring', 'Into Stars app', 'SI'],
+
+      [4, 'new', 'MyQS Engine', 'Building', 'Core'],
+      [4, 'new', 'Cerebrum', 'Data layer live', 'Core'],
+      [4, 'new', 'Career Match Phase 2', 'QAS pods', 'DE'],
+      [4, 'retired', 'Spreadsheet rankings pipeline', 'Into Cerebrum', 'SI'],
+      [5, 'new', 'MyQS Design System', 'Building', 'Core'],
+      [5, 'new', 'MyQS MCP / API', 'Building', 'Core'],
+      [5, 'new', 'Codex data collection', 'Scoping', 'Core'],
+      [5, 'retired', 'Appian', 'To HubSpot', 'US'],
+      [5, 'retired', 'Rank Ad', 'Commercial model retired', 'SI'],
+      [6, 'new', 'MyQS CX Ph2', 'Prototype', 'Core'],
+      [6, 'new', 'Sector Intelligence on QAS', 'Prototype', 'SI'],
+      [6, 'new', 'TU New (TUN)', 'Template build', 'DE'],
+      [6, 'retired', 'Rankings admin (legacy)', 'Into Rankings Admin app', 'SI'],
+      [7, 'new', 'Data Collection platform', 'Rankings + evaluation', 'Core'],
+      [7, 'new', 'Uni Services portal (USP)', 'Prototype', 'US'],
+      [7, 'retired', 'Manual data collection forms', 'Into Codex', 'Core'],
+      [7, 'retired', 'MIMO legacy reporting', 'Ian\u2019s team', 'Core'],
+
+      [8, 'new', 'WUR on QAS', 'Replatformed', 'SI'],
+      [8, 'new', 'AI Help', 'Scoping', 'Core'],
+      [8, 'retired', 'Members DB', 'Into TU New', 'DE'],
+      [9, 'new', 'RR / SR on QAS', 'Replatformed', 'SI'],
+      [9, 'new', 'Uni Services admin (USA)', 'Build', 'US'],
+      [9, 'retired', 'Events bookings (Drupal)', 'Into TU New', 'DE'],
+      [9, 'retired', 'Outreach site', 'Consolidated', 'DE'],
+      [10, 'new', 'AR / ER on QAS', 'Replatformed', 'SI'],
+      [10, 'new', 'Pulse (inc Cyber)', 'Platform telemetry', 'Core'],
+      [10, 'retired', 'MoveIN legacy', 'Infra compression', 'Core'],
+      [11, 'new', 'CN / 1 Mentor on QAS', 'Replatformed', 'SI'],
+      [11, 'new', 'Agentic analytics apps', 'Portfolio live', 'Core'],
+      [11, 'retired', 'Drupal TU', 'Retired', 'DE'],
+      [11, 'retired', 'MoveON legacy', 'Infra compression', 'Core'],
+    ];
+  }
+
+  quarterMeta() {
+    const out = [];
+    const eras = ['Pre-transition', 'Pre-transition', 'Pre-transition', 'Pre-transition',
+      'Build', 'Build', 'Build', 'Build',
+      'Replatform', 'Replatform', 'Replatform', 'Replatform'];
+    for (let y = 2025; y <= 2027; y++) {
+      for (let q = 1; q <= 4; q++) {
+        const i = out.length;
+        const era = eras[i];
+        out.push({
+          label: 'Q' + q + ' ' + y,
+          era,
+          headBg: era === 'Build' ? '#1A272E' : era === 'Replatform' ? '#2068C0' : '#DFE6E9',
+          headFg: era === 'Pre-transition' ? '#5C6B75' : '#ffffff',
+        });
+      }
+    }
+    return out;
+  }
+
+  renderVals() {
+    const defs = this.groupDefs();
+    const colorOf = {};
+    defs.forEach(d => { colorOf[d.key] = d.color; });
+    const active = this.state.groups;
+    const rows = this.raw().filter(r => active.length === 0 || active.indexOf(r[4]) >= 0);
+
+    const quarters = this.quarterMeta().map((m, i) => ({
+      label: m.label, era: m.era, headBg: m.headBg, headFg: m.headFg,
+      live: rows.filter(r => r[0] === i && r[1] === 'new').map(r => ({ name: r[2], note: r[3], bg: colorOf[r[4]] })),
+      retired: rows.filter(r => r[0] === i && r[1] === 'retired').map(r => ({ name: r[2], note: r[3], bg: colorOf[r[4]] })),
+    }));
+
+    const groupChips = defs.map(d => {
+      const on = active.indexOf(d.key) >= 0;
+      return {
+        label: d.label, dot: d.color,
+        bg: on ? d.color : '#fff', fg: '#1A272E',
+        border: on ? d.color : '#E1E8EB',
+        toggle: () => this.setState(s => ({
+          groups: s.groups.indexOf(d.key) >= 0 ? s.groups.filter(g => g !== d.key) : s.groups.concat([d.key]),
+        })),
+      };
+    });
+
+    return {
+      quarters, groupChips,
+      weekLabel: this.weekLabel(),
+      totalNew: rows.filter(r => r[1] === 'new').length,
+      totalRetired: rows.filter(r => r[1] === 'retired').length,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

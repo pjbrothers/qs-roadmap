@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reports</title>
+<script src="data/plan.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="palette.css" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:var(--qs-page); }
+  * { box-sizing:border-box; }
+  a { color:var(--qs-blue); text-decoration:none; }
+  a:hover { color:var(--qs-ink); }
+</style>
+</helmet>
+
+<div style="font-family:'PP Telegraf','Manrope',system-ui,sans-serif; background:#F2F5F6; color:#1A272E; padding:34px 40px 46px; min-height:100vh;">
+
+  <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:32px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <img src="uploads/qs-logo.png" alt="QS" style="width:46px; height:46px; object-fit:contain;">
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:2.4px; text-transform:uppercase; color:var(--qs-600);">{{ weekLabel }}</div>
+        <div style="font-size:31px; font-weight:800; letter-spacing:-0.6px; line-height:1.1; margin-top:4px;">Reports</div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;">
+          <a data-download-week href="{{ pdfHref }}" download="{{ pdfName }}" title="{{ pdfTitle }}" style="display:flex; align-items:center; gap:8px; background:var(--qs-ink); color:#fff; border-radius:999px; padding:8px 16px; font-size:12px; font-weight:800; transition:opacity .14s;" style-hover="opacity:0.86;">
+            <span style="font-size:13px; line-height:1;">↓</span>{{ pdfLabel }}
+          </a>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+      <div data-page-switch style="display:flex; gap:4px; background:#fff; border-radius:999px; padding:4px;">
+        <a href="index.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Delivery Plan</a>
+        <span style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:800; background:var(--qs-ink); color:#fff;">Reports</span>
+        <a href="teams.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Teams</a>
+        <a href="people.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">People</a>
+        <a href="transformation.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Transformation</a>
+        <a href="architecture.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Architecture</a>
+        <a href="data.html" style="border-radius:999px; padding:6px 15px; font-size:12px; font-weight:700; color:var(--qs-600); transition:all .14s;" style-hover="background:var(--qs-page); color:var(--qs-ink);">Data</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start; gap:20px; margin-top:24px;">
+
+    <div data-week-list style="flex:0 0 250px; position:sticky; top:20px; max-height:calc(100vh - 40px); overflow-y:auto; background:#fff; border-radius:16px; padding:10px; box-shadow:0 1px 2px rgba(26,39,46,0.06);">
+      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--qs-550); padding:6px 10px 8px;">Published reports</div>
+      <sc-for list="{{ reports }}" as="r" hint-placeholder-count="8">
+        <div data-week-link="{{ r.week }}" data-on="{{ r.onFlag }}" onClick="{{ r.pick }}" style="cursor:pointer; user-select:none; display:flex; align-items:center; justify-content:space-between; gap:8px; border-radius:10px; padding:9px 11px; margin-top:2px; background:{{ r.bg }}; color:{{ r.fg }}; transition:background .12s;" style-hover="opacity:0.86;">
+          <div style="min-width:0;">
+            <div style="font-size:13.5px; font-weight:800; line-height:1.2;">{{ r.title }}</div>
+            <div style="font-size:10.5px; font-weight:700; opacity:0.72; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.dates }}</div>
+          </div>
+          <a href="{{ r.pdf }}" target="_blank" title="Open the {{ r.title }} PDF" onClick="{{ r.stop }}" style="flex:0 0 auto; font-size:10px; font-weight:800; letter-spacing:0.4px; border-radius:999px; padding:3px 8px; background:{{ r.pdfBg }}; color:{{ r.pdfFg }};">PDF</a>
+        </div>
+      </sc-for>
+      <div style="font-size:10.5px; font-weight:600; color:var(--qs-550); padding:12px 10px 4px; line-height:1.45;">Each build writes the file that report declares — <span style="font-weight:800;">reports/qs-week-NN-report.pdf</span> — so every published report stays retrievable.</div>
+    </div>
+
+    <div style="flex:1 1 auto; min-width:0;">
+
+      <div data-slide-stage data-slide-count="{{ slideCount }}" data-slide-index="{{ slideIndex }}" data-deck-gantts="{{ deckGantts }}" style="position:relative;">
+        <div style="background:#fff; border-radius:16px; padding:18px; box-shadow:0 1px 2px rgba(26,39,46,0.06);">
+        <div data-slide-frame style="position:relative; width:100%; aspect-ratio:16 / 9; overflow:hidden; border-radius:10px; background:var(--qs-page);">
+          <div data-slide style="position:absolute; top:0; left:0; width:1280px; height:720px; transform-origin:top left; background:#fff; padding:26px 30px 20px; display:flex; flex-direction:column; overflow:hidden;">
+
+            <sc-if value="{{ slide.isCover }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute; inset:0; display:flex;">
+                <div style="flex:0 0 480px; background:var(--qs-ink); color:#fff; padding:52px 46px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <img src="uploads/qs-logo.png" alt="QS" style="width:40px; height:40px; object-fit:contain;">
+                    <div style="font-size:11px; font-weight:800; letter-spacing:2.4px; text-transform:uppercase; opacity:0.72; margin-top:58px;">{{ slide.eyebrow }}</div>
+                    <div style="font-size:15px; font-weight:700; opacity:0.78; margin-top:12px;">{{ docTitle }}</div>
+                    <div style="font-size:42px; font-weight:800; letter-spacing:-1.3px; line-height:1.05; margin-top:4px;">{{ slide.coverTitle }}</div>
+                    <div style="font-size:42px; font-weight:800; letter-spacing:-1.3px; line-height:1.05;">{{ slide.coverTitle2 }}</div>
+                    <div style="font-size:13.5px; font-weight:600; opacity:0.78; margin-top:12px; line-height:1.5;">{{ slide.lead }}</div>
+                  </div>
+                  <div style="display:flex; gap:14px; flex-wrap:wrap;">
+                    <sc-for list="{{ slide.legend }}" as="g" hint-placeholder-count="6">
+                      <div style="display:flex; align-items:center; gap:7px; font-size:10.5px; font-weight:700;">
+                        <span style="width:9px; height:9px; border-radius:3px; background:{{ g.color }};"></span>{{ g.label }}
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="flex:1 1 auto; padding:52px 42px 30px; display:flex; flex-direction:column; gap:10px; min-width:0;">
+                  <div style="flex:0 0 auto; font-size:10px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-600);">The week at a glance</div>
+                  <div style="flex:1 1 auto; min-height:0; display:grid; grid-template-columns:1fr 1fr; grid-auto-rows:1fr; gap:11px;">
+                    <sc-for list="{{ slide.blocks }}" as="b" hint-placeholder-count="6">
+                      <div style="display:flex; gap:10px; min-width:0; min-height:0; background:var(--qs-page); border-radius:12px; padding:12px 14px; overflow:hidden;">
+                        <span style="flex:0 0 auto; width:4px; border-radius:2px; background:{{ b.color }};"></span>
+                        <div style="min-width:0;">
+                          <div style="display:flex; align-items:baseline; gap:7px;">
+                            <div style="font-size:12.5px; font-weight:800;">{{ b.label }}</div>
+                            <div style="font-size:8.5px; font-weight:800; letter-spacing:0.7px; text-transform:uppercase; color:var(--qs-600);">{{ b.count }}</div>
+                          </div>
+                          <div style="font-size:10px; font-weight:600; line-height:1.5; color:var(--qs-650); margin-top:4px;">
+                            <span style="font-weight:800; color:var(--qs-ink);">Outcomes.</span> {{ b.outcomes }}
+                          </div>
+                          <div style="font-size:10px; font-weight:600; line-height:1.5; color:var(--qs-650); margin-top:5px;">
+                            <span style="font-weight:800; color:var(--qs-signal-red);">Risks &amp; decisions.</span> {{ b.risks }}
+                          </div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="flex:0 0 auto; font-size:9.5px; font-weight:700; color:var(--qs-550);">{{ slide.footer }}</div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ slide.isPatternCover }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute; inset:0; display:flex;">
+                <div style="flex:0 0 436px; background:var(--qs-ink); color:#fff; padding:52px 44px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <img src="uploads/qs-logo.png" alt="QS" style="width:40px; height:40px; object-fit:contain;">
+                    <div style="font-size:11px; font-weight:800; letter-spacing:2.4px; text-transform:uppercase; opacity:0.72; margin-top:58px;">{{ slide.eyebrow }}</div>
+                    <div style="font-size:15px; font-weight:700; opacity:0.78; margin-top:12px;">{{ docTitle }}</div>
+                    <div style="font-size:46px; font-weight:800; letter-spacing:-1.4px; line-height:1.03; margin-top:4px;">{{ slide.coverTitle }}</div>
+                    <div style="font-size:46px; font-weight:800; letter-spacing:-1.4px; line-height:1.03;">{{ slide.coverTitle2 }}</div>
+                    <div style="font-size:13.5px; font-weight:600; opacity:0.78; margin-top:14px; line-height:1.55;">{{ slide.lead }}</div>
+                  </div>
+                  <div style="font-size:11px; font-weight:700; opacity:0.6; line-height:1.5;">{{ slide.footer }}</div>
+                </div>
+                <div style="flex:1 1 auto; padding:52px 44px 34px; display:flex; flex-direction:column; gap:12px; min-width:0;">
+                  <div style="flex:0 0 auto; font-size:10px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-600);">{{ slide.glance }}</div>
+                  <div style="flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:9px;">
+                    <sc-for list="{{ slide.rows }}" as="r" hint-placeholder-count="6">
+                      <div style="flex:1 1 0; min-height:0; display:flex; gap:12px; background:var(--qs-page); border-radius:12px; padding:11px 15px; overflow:hidden;">
+                        <div style="flex:0 0 auto; font-size:17px; font-weight:800; color:var(--qs-400); line-height:1.1;">{{ r.n }}</div>
+                        <div style="min-width:0;">
+                          <div style="font-size:13px; font-weight:800; line-height:1.25;">{{ r.head }}</div>
+                          <div style="font-size:10.5px; font-weight:600; line-height:1.5; color:var(--qs-650); margin-top:3px;">{{ r.text }}</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <div data-slide-head="{{ slide.plain }}" style="flex:0 0 auto; display:{{ slide.chromeDisplay }}; align-items:center; justify-content:space-between; gap:20px; padding-bottom:10px; border-bottom:1px solid var(--qs-250);">
+              <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+                <img src="uploads/qs-logo.png" alt="QS" style="width:26px; height:26px; object-fit:contain;">
+                <div style="min-width:0;">
+                  <div style="font-size:9px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--qs-600);">{{ slide.eyebrow }}</div>
+                  <div style="font-size:16px; font-weight:800; letter-spacing:-0.2px; line-height:1.15; margin-top:1px;">{{ docTitle }}</div>
+                </div>
+              </div>
+              <div style="flex:0 0 auto; display:flex; align-items:center; gap:9px; font-size:13px; font-weight:800;">
+                <sc-if value="{{ slide.hasDot }}" hint-placeholder-val="{{ false }}">
+                  <span style="width:11px; height:11px; border-radius:3px; background:{{ slide.color }};"></span>
+                </sc-if>
+                <span>{{ slide.title }}</span>
+                <span style="font-size:11.5px; font-weight:700; color:var(--qs-600);">{{ slide.kicker }}</span>
+              </div>
+            </div>
+
+            <div style="flex:1 1 auto; min-height:0; margin-top:18px; display:{{ slide.chromeDisplay }}; gap:24px; overflow:hidden;">
+
+              <sc-if value="{{ slide.isToc }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:14px;">
+                  <div style="font-size:30px; font-weight:800; letter-spacing:-0.7px;">Contents</div>
+                  <div style="flex:1 1 auto; min-height:0; column-count:2; column-gap:52px;">
+                    <sc-for list="{{ slide.rows }}" as="r" hint-placeholder-count="12">
+                      <div style="break-inside:avoid; display:flex; align-items:baseline; gap:11px; padding:13px 0; border-bottom:1px solid var(--qs-150);">
+                        <span style="flex:0 0 auto; width:11px; height:11px; border-radius:3px; background:{{ r.color }};"></span>
+                        <span style="font-size:16px; font-weight:800;">{{ r.label }}</span>
+                        <span style="flex:1 1 auto; border-bottom:1px dotted var(--qs-250); margin:0 6px 4px;"></span>
+                        <span style="font-size:15px; font-weight:800; color:var(--qs-600);">{{ r.page }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ slide.isGantt }}" hint-placeholder-val="{{ false }}">
+                <div data-gantt-slot="{{ slide.ganttKey }}" data-gantt-columns="{{ slide.ganttColumns }}" style="flex:1 1 auto; min-width:0; min-height:0; overflow:hidden;"></div>
+              </sc-if>
+
+              <sc-if value="{{ slide.isSection }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:0 0 300px; border-radius:18px; padding:30px 28px; display:flex; flex-direction:column; justify-content:space-between; background:{{ slide.color }}; color:var(--qs-ink-on-fill);">
+                  <div style="font-size:10px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase;">{{ slide.sectionNo }}</div>
+                  <div>
+                    <div style="font-size:36px; font-weight:800; letter-spacing:-1px; line-height:1.05;">{{ slide.title }}</div>
+                    <div style="font-size:13px; font-weight:700; margin-top:7px;">{{ slide.count }}</div>
+                  </div>
+                  <div style="font-size:11px; font-weight:700; line-height:1.6;">
+                    <sc-for list="{{ slide.stats }}" as="t" hint-placeholder-count="3">
+                      <div>{{ t }}</div>
+                    </sc-for>
+                  </div>
+                </div>
+                <sc-if value="{{ slide.hasGantt }}" hint-placeholder-val="{{ true }}">
+                  <div data-gantt-slot="{{ slide.ganttKey }}" data-gantt-columns="{{ slide.ganttColumns }}" style="flex:1 1 auto; min-width:0; min-height:0; overflow:hidden;"></div>
+                </sc-if>
+                <sc-if value="{{ slide.noGantt }}" hint-placeholder-val="{{ false }}">
+                  <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:8px;">
+                    <div style="font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--qs-600);">{{ slide.summaryLabel }}</div>
+                    <div style="font-size:13.5px; font-weight:600; line-height:1.6; color:var(--qs-650);">{{ slide.summary }}</div>
+                  </div>
+                </sc-if>
+              </sc-if>
+
+              <sc-if value="{{ slide.isHeatmap }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1 1 auto; min-width:0; display:flex; gap:30px;">
+                  <sc-for list="{{ slide.panels }}" as="p" hint-placeholder-count="2">
+                    <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:6px;">
+                      <div style="display:flex; align-items:baseline; gap:9px;">
+                        <div style="font-size:19px; font-weight:800; letter-spacing:-0.4px;">{{ p.title }}</div>
+                        <div style="font-size:10px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:var(--qs-600);">{{ p.span }}</div>
+                      </div>
+                      <div style="font-size:11.5px; font-weight:600; color:var(--qs-650);">{{ p.lead }}</div>
+                      <div style="display:flex; gap:2px; align-items:center; margin-top:2px;">
+                        <div style="flex:0 0 16px;"></div>
+                        <sc-for list="{{ p.months }}" as="m" hint-placeholder-count="24">
+                          <div style="flex:1 1 0; text-align:center; font-size:6.5px; font-weight:800; color:var(--qs-450);">{{ m.label }}</div>
+                        </sc-for>
+                      </div>
+                      <div style="flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:2px;">
+                        <sc-for list="{{ p.rows }}" as="r" hint-placeholder-count="30">
+                          <div style="flex:1 1 0; min-height:0; display:flex; gap:2px; align-items:center;">
+                            <div style="flex:0 0 16px; text-align:right; font-size:6.5px; font-weight:800; color:var(--qs-450);">{{ r.label }}</div>
+                            <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="24">
+                              <div title="{{ c.tip }}" style="flex:1 1 0; height:100%; border-radius:2px; background:{{ c.bg }};"></div>
+                            </sc-for>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-top:3px;">
+                        <div style="font-size:9px; font-weight:800; letter-spacing:1.1px; text-transform:uppercase; color:var(--qs-600);">{{ p.legendLabel }}</div>
+                        <sc-for list="{{ p.legend }}" as="l" hint-placeholder-count="5">
+                          <div style="display:flex; align-items:center; gap:4px;">
+                            <span style="width:10px; height:10px; border-radius:2px; background:{{ l.bg }};"></span>
+                            <span style="font-size:9px; font-weight:700; color:var(--qs-600);">{{ l.label }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ slide.isUpdates }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1 1 auto; min-width:0; column-count:2; column-gap:30px;">
+                  <sc-for list="{{ slide.items }}" as="d" hint-placeholder-count="6">
+                    <div style="break-inside:avoid; min-width:0; margin-bottom:16px; border-left:3px solid {{ slide.color }}; padding-left:13px;">
+                      <div style="font-size:15px; font-weight:800; line-height:1.25;">{{ d.name }}</div>
+                      <div style="font-size:9.5px; font-weight:800; letter-spacing:0.9px; text-transform:uppercase; color:var(--qs-550); margin-top:3px;">{{ d.sub }}</div>
+                      <div style="font-size:12px; font-weight:600; line-height:1.5; color:var(--qs-650); margin-top:5px;">{{ d.text }}</div>
+                      <sc-if value="{{ d.hasRisk }}" hint-placeholder-val="{{ false }}">
+                        <div style="font-size:11.5px; font-weight:600; line-height:1.5; color:var(--qs-650); margin-top:5px;">
+                          <span style="font-weight:800; color:var(--qs-signal-red);">Risks and decisions.</span> {{ d.risk }}
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ slide.isRecs }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:12px;">
+                  <div style="flex:0 0 auto; font-size:13px; font-weight:600; line-height:1.55; color:var(--qs-650);">{{ slide.sub }}. Each one follows from a pattern in the pages that follow.</div>
+                  <div style="flex:1 1 auto; min-height:0; column-count:2; column-gap:32px;">
+                    <sc-for list="{{ slide.rows }}" as="r" hint-placeholder-count="6">
+                      <div style="break-inside:avoid; display:flex; gap:15px; min-width:0; margin-bottom:26px;">
+                        <div style="flex:0 0 auto; font-size:24px; font-weight:800; color:var(--qs-350); line-height:1.05;">{{ r.n }}</div>
+                        <div style="min-width:0;">
+                          <div style="font-size:16.5px; font-weight:800; line-height:1.25; letter-spacing:-0.2px;">{{ r.head }}</div>
+                          <div style="font-size:13px; font-weight:600; line-height:1.6; color:var(--qs-650); margin-top:5px;">{{ r.text }}</div>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ slide.isPattern }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:14px;">
+                  <div style="flex:0 0 auto; font-size:13px; font-weight:600; line-height:1.55; color:var(--qs-650); max-width:940px;">{{ slide.lead }}</div>
+                  <div style="flex:1 1 auto; min-height:0; column-count:2; column-gap:32px;">
+                    <sc-for list="{{ slide.rows }}" as="r" hint-placeholder-count="8">
+                      <div style="break-inside:avoid; min-width:0; margin-bottom:13px; border-left:3px solid {{ r.color }}; padding-left:13px;">
+                        <div style="font-size:13.5px; font-weight:800; line-height:1.25;">{{ r.name }}</div>
+                        <div style="font-size:9.5px; font-weight:800; letter-spacing:0.9px; text-transform:uppercase; color:var(--qs-550); margin-top:3px;">{{ r.meta }}</div>
+                        <div style="font-size:11px; font-weight:600; line-height:1.5; color:var(--qs-650); margin-top:4px;">{{ r.text }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ slide.isTwoLists }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:14px;">
+                  <div style="flex:0 0 auto; font-size:13px; font-weight:600; line-height:1.55; color:var(--qs-650); max-width:980px;">{{ slide.lead }}</div>
+                  <div style="flex:1 1 auto; min-height:0; display:flex; gap:30px;">
+                    <div style="flex:1 1 1px; min-width:0; display:flex; flex-direction:column; gap:7px;">
+                      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.3px; text-transform:uppercase; color:var(--qs-600);">{{ slide.leftTitle }}</div>
+                      <sc-for list="{{ slide.left }}" as="r" hint-placeholder-count="12">
+                        <div style="display:flex; align-items:center; gap:11px; min-width:0; padding:6px 0; border-bottom:1px solid var(--qs-150);">
+                          <span style="flex:0 0 auto; width:4px; height:20px; border-radius:2px; background:{{ r.color }};"></span>
+                          <div style="flex:1 1 auto; min-width:0; font-size:12.5px; font-weight:800; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ r.name }}</div>
+                          <div style="flex:0 0 auto; font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--qs-550);">{{ r.meta }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="flex:1 1 1px; min-width:0; display:flex; flex-direction:column; gap:7px;">
+                      <div style="font-size:10.5px; font-weight:800; letter-spacing:1.3px; text-transform:uppercase; color:var(--qs-600);">{{ slide.rightTitle }}</div>
+                      <sc-for list="{{ slide.right }}" as="r" hint-placeholder-count="12">
+                        <div style="display:flex; align-items:center; gap:11px; min-width:0; padding:6px 0; border-bottom:1px solid var(--qs-150);">
+                          <span style="flex:0 0 auto; width:4px; height:20px; border-radius:2px; background:{{ r.color }};"></span>
+                          <div style="flex:1 1 auto; min-width:0; font-size:12.5px; font-weight:800; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ r.name }}</div>
+                          <div style="flex:0 0 auto; font-size:9.5px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; color:var(--qs-550);">{{ r.meta }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+            </div>
+
+            <div style="flex:0 0 auto; margin-top:auto; display:{{ slide.chromeDisplay }}; align-items:center; justify-content:space-between; gap:16px; padding-top:10px; border-top:1px solid var(--qs-150); font-size:10.5px; font-weight:700; color:var(--qs-550);">
+              <span>{{ slide.footer }}</span>
+              <span>Page {{ slide.page }}</span>
+            </div>
+
+          </div>
+        </div>
+        </div>
+        <div data-slide-prev onClick="{{ prev }}" title="Previous slide (←)" style="cursor:pointer; user-select:none; position:absolute; left:28px; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; background:rgba(255,255,255,0.86); color:{{ prevFg }}; box-shadow:0 2px 10px rgba(26,39,46,0.14); transition:all .12s;" style-hover="background:var(--qs-ink); color:#fff;">←</div>
+        <div data-slide-next onClick="{{ next }}" title="Next slide (→)" style="cursor:pointer; user-select:none; position:absolute; right:28px; top:50%; transform:translateY(-50%); width:42px; height:42px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; background:rgba(255,255,255,0.86); color:{{ nextFg }}; box-shadow:0 2px 10px rgba(26,39,46,0.14); transition:all .12s;" style-hover="background:var(--qs-ink); color:#fff;">→</div>
+        <div style="position:absolute; left:50%; bottom:-26px; transform:translateX(-50%); font-size:11px; font-weight:700; color:var(--qs-550); white-space:nowrap;">{{ slideLabel }} · {{ deckLabel }} · ← → or click the arrows</div>
+      </div>
+
+      <div style="margin-top:38px; font-size:11.5px; font-weight:600; color:var(--qs-550);">The slides are built from <span style="font-weight:800;">data/plan.js</span> — the same content the PDF carries. Build one with <span style="font-weight:800;">npm run build:weekly 41</span> or <span style="font-weight:800;">npm run build:weekly q3-patterns</span>.</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1100}}">
+class Component extends DCLogic {
+  state = {
+    week: null,
+    slide: 0,
+  };
+
+  plan() {
+    return window.QS_PLAN || {};
+  }
+
+  weekLabel() {
+    const d = new Date();
+    const u = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    u.setUTCDate(u.getUTCDate() + 4 - (u.getUTCDay() || 7));
+    const week = Math.ceil(((u - Date.UTC(u.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+    return 'Week ' + week + ', ' + u.getUTCFullYear();
+  }
+
+  // Capture the Gantt from index.html: the whole plan, then one per portfolio. Everything else on
+  // this page is derived from data/plan.js, but the Gantt is the delivery plan's own view.
+  captureGantts() {
+    if (this.frame) return;
+    const plan = this.plan();
+    const frame = document.createElement('iframe');
+    frame.setAttribute('data-gantt-source', '');
+    frame.style.cssText = 'position:absolute; left:-20000px; top:0; width:1500px; height:1400px; border:0;';
+    frame.src = 'index.html';
+    document.body.appendChild(frame);
+    this.frame = frame;
+    this.gantts = {};
+    const ready = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const wait = test => new Promise(resolve => {
+      const tick = () => (test() ? resolve() : setTimeout(tick, 120));
+      tick();
+    });
+    frame.addEventListener('load', async () => {
+      const doc = frame.contentDocument;
+      await wait(() => doc.querySelector('[data-gantt-row]'));
+      const chips = () => [...doc.querySelectorAll('[data-portfolio-chip]')];
+      const clear = async () => {
+        for (const c of chips()) if (c.dataset.on === 'yes') { c.click(); await ready(); }
+      };
+      await clear();
+      await ready();
+      this.gantts.all = doc.querySelector('[data-view="gantt"]').cloneNode(true);
+      for (const g of (plan.portfolios || [])) {
+        await clear();
+        const chip = chips().find(c => c.dataset.portfolioChip === g.label);
+        if (!chip) continue;
+        chip.click();
+        await ready();
+        await new Promise(r => setTimeout(r, 60));
+        this.gantts[g.key] = doc.querySelector('[data-view="gantt"]').cloneNode(true);
+      }
+      await clear();
+      this.setState({ gantts: Object.keys(this.gantts).length });
+    });
+  }
+
+  // Drop a captured Gantt into the slide and scale it to the space it has.
+  placeGantts() {
+    const slots = [...document.querySelectorAll('[data-gantt-slot]')];
+    for (const slot of slots) {
+      const key = slot.dataset.ganttSlot;
+      const node = this.gantts && this.gantts[key];
+      if (!node || slot.dataset.filled === key) continue;
+      slot.innerHTML = '';
+      slot.dataset.filled = key;
+      const copy = node.cloneNode(true);
+      copy.style.minWidth = '0';
+      copy.style.boxShadow = 'none';
+      const wrap = document.createElement('div');
+      // Scaled with zoom, not transform: Chrome drops a transform on this node when it prints, and
+      // the chart lands at full size inside a clipped slot — the printed page then shows a third of
+      // the rows. The A3 sheet and the report scale with zoom for the same reason.
+      wrap.style.cssText = 'position:absolute; top:0; left:0;';
+      const two = slot.dataset.ganttColumns === '2';
+      const inner = two ? this.ganttTwoColumns(copy, 1180) : copy;
+      if (!two) copy.style.width = '1180px';
+      wrap.appendChild(inner);
+      slot.style.position = 'relative';
+      slot.appendChild(wrap);
+      const fit = () => {
+        wrap.style.zoom = 1;
+        const box = slot.getBoundingClientRect();
+        const nat = wrap.getBoundingClientRect();
+        if (!box.width || !nat.width) return;
+        // Two columns lay out at whatever width makes the height-driven scale fill the slot, so the
+        // page is used edge to edge; the initiative labels get the room they need either way.
+        if (two) {
+          const z = box.height / nat.height;
+          const perColumn = Math.max(900, Math.round((box.width / z - 26) / 2));
+          if (Math.abs(perColumn - (wrap.dataset.columnWidth || 0)) > 12) {
+            wrap.dataset.columnWidth = perColumn;
+            wrap.innerHTML = '';
+            wrap.appendChild(this.ganttTwoColumns(node.cloneNode(true), perColumn));
+            wrap.style.zoom = 1;
+          }
+        }
+        const after = wrap.getBoundingClientRect();
+        let z = Math.min(box.width / after.width, box.height / after.height);
+        wrap.style.zoom = z;
+        // Zoom changes layout, so the zoomed node can come back taller than the straight ratio
+        // predicted — Chrome's 6px minimum font size stops small text shrinking linearly. Re-measure
+        // and ease it down until it really fits, the way the report and the A3 sheet do.
+        for (let n = 0; n < 6; n++) {
+          const now = wrap.getBoundingClientRect();
+          const over = Math.max(now.width / box.width, now.height / box.height);
+          if (over <= 1.001) break;
+          z = z / over * 0.997;
+          wrap.style.zoom = z;
+        }
+      };
+      fit();
+      requestAnimationFrame(fit);
+    }
+  }
+
+  // The whole-plan Gantt, split into two columns with each band kept whole.
+  ganttTwoColumns(gantt, width) {
+    const kids = [...gantt.children];
+    const head = gantt.querySelector('[data-gantt-head]') || kids[0];
+    const bodyWrap = gantt.querySelector('[data-gantt-body]') || kids[1];
+    const total = gantt.querySelector('[data-gantt-total]') || kids[kids.length - 1];
+    const overlay = bodyWrap.querySelector('[data-today-overlay]');
+    const bands = [...bodyWrap.children].filter(n => n !== overlay);
+    gantt.style.minWidth = '0';
+    gantt.style.boxShadow = 'none';
+    const row = document.createElement('div');
+    row.style.cssText = `display:flex; gap:26px; align-items:flex-start; width:${width * 2 + 26}px;`;
+    const cols = [0, 1].map(() => {
+      const c = document.createElement('div');
+      c.style.cssText = `width:${width}px; position:relative;`;
+      c.appendChild(head.cloneNode(true));
+      row.appendChild(c);
+      return c;
+    });
+    const probe = document.createElement('div');
+    probe.style.cssText = `width:${width}px; position:absolute; left:-20000px; top:0;`;
+    document.body.appendChild(probe);
+    const heights = bands.map(b => { probe.innerHTML = ''; probe.appendChild(b.cloneNode(true)); return probe.offsetHeight; });
+    probe.remove();
+    const half = heights.reduce((a, b) => a + b, 0) / 2;
+    let col = 0;
+    let filled = 0;
+    bands.forEach((band, i) => {
+      if (col === 0 && filled > 0 && filled + heights[i] / 2 > half) { col = 1; filled = 0; }
+      cols[col].appendChild(band.cloneNode(true));
+      filled += heights[i];
+    });
+    cols[1].appendChild(total.cloneNode(true));
+    if (overlay) cols.forEach(c => c.appendChild(overlay.cloneNode(true)));
+    // Give the initiative name room: the label column scales with the column width.
+    const label = Math.round(Math.min(520, Math.max(308, width * 0.34)));
+    row.querySelectorAll('[data-gantt-row] > div:first-child, [data-gantt-band] > div > div:first-child')
+      .forEach(n => { if (n.style.flex && n.style.flex.indexOf('308px') >= 0) n.style.flex = `0 0 ${label}px`; });
+    [...row.querySelectorAll('div')].forEach(n => {
+      if (n.style.flex === '0 0 308px') n.style.flex = `0 0 ${label}px`;
+    });
+    // No effort key on the slide: the deck's Gantt is fitted by measuring this node, and the extra
+    // block throws that measurement out — the whole chart lands at a third of the slide with rows
+    // dropped. The key is on the A3 sheet and in the report, where the layout has room for it.
+    return row;
+  }
+
+  componentDidMount() {
+    this.captureGantts();
+    this.fit = () => this.forceUpdate ? this.forceUpdate() : this.setState({});
+    window.addEventListener('resize', this.fit);
+    this.scale();
+    this.keys = e => {
+      if (e.key === 'ArrowRight') this.step(1);
+      if (e.key === 'ArrowLeft') this.step(-1);
+    };
+    window.addEventListener('keydown', this.keys);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.fit);
+    window.removeEventListener('keydown', this.keys);
+  }
+
+  // The slide is laid out at 1280×720 and scaled to whatever width the panel has.
+  scale() {
+    requestAnimationFrame(() => {
+      const frame = document.querySelector('[data-slide-frame]');
+      const slide = document.querySelector('[data-slide]');
+      if (!frame || !slide) return;
+      slide.style.transform = 'scale(' + (frame.clientWidth / 1280) + ')';
+      this.placeGantts();
+    });
+  }
+
+  componentDidUpdate() {
+    this.scale();
+    this.placeGantts();
+  }
+
+  step(by) {
+    const total = this.slides().length;
+    this.setState(s => ({ slide: Math.max(0, Math.min(total - 1, s.slide + by)) }));
+  }
+
+  currentWeek() {
+    const reports = (this.plan().weekly || {}).reports || [];
+    return this.state.week || (reports[0] || {}).week || null;
+  }
+
+  // A fixed seed, so the illustrative heatmaps are the same every render and in every PDF.
+  rng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // Days down the page, months across it, split into two blocks of twelve months.
+  heatmap(kind) {
+    const names = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const now = new Date();
+    const random = this.rng(kind === 'ai' ? 20260413 : 20251013);
+    const scale = kind === 'ai'
+      ? ['var(--qs-150)', '#FFE7BF', '#FFC266', '#F5A100', '#B36B00']
+      : ['var(--qs-150)', '#CFE9DC', '#8FD3B0', '#3FAE7E', '#0E7C4A'];
+
+    // One column per month, oldest first, 24 of them.
+    const months = [];
+    for (let back = 23; back >= 0; back--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - back, 1);
+      const age = (23 - back) / 23;
+      const days = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      const cells = [];
+      for (let day = 1; day <= 30; day++) {
+        if (day > days) { cells.push({ bg: 'transparent', tip: '' }); continue; }
+        const date = new Date(d.getFullYear(), d.getMonth(), day);
+        const weekend = date.getDay() === 0 || date.getDay() === 6;
+        const stamp = `${day} ${names[d.getMonth()]} ${String(d.getFullYear()).slice(2)}`;
+        if (kind === 'ai') {
+          const trend = 2 + 43 * Math.pow(age, 1.35);
+          const pct = Math.max(0, Math.min(72, (weekend ? trend * 0.45 : trend) + (random() - 0.5) * 11));
+          const band = pct < 4 ? 0 : pct < 15 ? 1 : pct < 28 ? 2 : pct < 42 ? 3 : 4;
+          cells.push({ bg: scale[band], tip: `${stamp} · ${Math.round(pct)}% AI` });
+        } else {
+          const base = (900 + 1500 * age) * (weekend ? 0.12 : 1);
+          const lines = Math.max(0, Math.round(base * (0.45 + random() * 1.1)));
+          const band = lines < 150 ? 0 : lines < 600 ? 1 : lines < 1200 ? 2 : lines < 2000 ? 3 : 4;
+          cells.push({ bg: scale[band], tip: `${stamp} · ${lines.toLocaleString('en-GB')} lines` });
+        }
+      }
+      months.push({ label: names[d.getMonth()], year: String(d.getFullYear()).slice(2), cells });
+    }
+    return {
+      scale,
+      span: months[0].label + ' ' + months[0].year + ' – ' + months[months.length - 1].label + ' ' + months[months.length - 1].year,
+      months: months.map((m, n) => ({ label: n % 2 === 0 ? m.label : '', year: m.year })),
+      rows: Array.from({ length: 30 }, (_, d) => ({
+        label: (d + 1) % 5 === 0 || d === 0 ? String(d + 1) : '',
+        cells: months.map(m => m.cells[d]),
+      })),
+    };
+  }
+
+  // ---- Quarterly patterns: what the last nine weeks say when read together, for a CEO, CTO or CFO.
+  patternSlides(report) {
+    const plan = this.plan();
+    const weeks = (plan.updates.weeks || []).map(w => w.week)
+      .filter(w => w >= (report.from || 0) && w <= (report.to || 99)).sort((a, b) => a - b);
+    const entries = (plan.updates.entries || []).filter(e => weeks.includes(e.week));
+    const sections = (plan.teamUpdates.sections || []).filter(s => weeks.includes(s.week));
+    const laneOf = {}; (plan.lanes || []).forEach(l => { laneOf[l.key] = l; });
+    const colorOf = {}; (plan.portfolios || []).forEach(g => { colorOf[g.key] = g.color; });
+    const cardOf = {};
+    (plan.initiatives || []).forEach(i => (i.ids.length ? i.ids : [i.name]).forEach(k => { cardOf[k] = i; }));
+    const keyOf = i => (i.ids.length ? i.ids[0] : i.name);
+    const label = i => (i.ids.length ? i.ids[0].replace(/^EP-/, 'IN-') : 'No ID');
+    const colour = i => (laneOf[i.lane] ? colorOf[laneOf[i.lane].group] : 'var(--qs-250)');
+    const clean = t => String(t || '').replace(/\s+/g, ' ').trim();
+    const short = (t, n) => {
+      const text = clean(t);
+      if (text.length <= n) return text;
+      const cut = text.slice(0, n);
+      return cut.slice(0, Math.max(cut.lastIndexOf('. ') + 1, cut.lastIndexOf(' '))).replace(/[,;:]$/, '') + '…';
+    };
+    const money = n => (!n ? '–' : n >= 1000000 ? '£' + (n / 1000000).toFixed(n % 1000000 ? 1 : 0) + 'm' : '£' + Math.round(n / 1000) + 'k');
+
+    // How many of the nine weeks each initiative was reported in.
+    const seen = {};
+    entries.forEach(e => (e.epics || []).forEach(k => {
+      const card = cardOf[k];
+      if (!card) return;
+      (seen[keyOf(card)] = seen[keyOf(card)] || { card, weeks: new Set(), risks: [] }).weeks.add(e.week);
+      if (e.kind === 'risk') seen[keyOf(card)].risks.push({ week: e.week, text: clean(e.text) });
+    }));
+    const tracked = Object.values(seen);
+
+    // 1. Persistent risks: the same initiative raising a risk in three or more separate weeks.
+    const persistent = tracked.filter(t => new Set(t.risks.map(r => r.week)).size >= 2)
+      .map(t => ({
+        name: t.card.name, id: label(t.card), color: colour(t.card),
+        weeks: [...new Set(t.risks.map(r => r.week))].sort((a, b) => a - b),
+        count: new Set(t.risks.map(r => r.week)).size,
+        latest: short(t.risks.sort((a, b) => b.week - a.week)[0].text, 210),
+      })).sort((a, b) => b.count - a.count).slice(0, 10);
+
+    // 2. Momentum against inertia: carried nearly every week, or scheduled and silent.
+    const nowMonth = (() => {
+      const d = new Date();
+      return plan.meta.months.indexOf(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ' ' + String(d.getFullYear()).slice(2));
+    })();
+    const building = (plan.initiatives || []).filter(i => {
+      const w = 'buildWindow' in i ? i.buildWindow : null;
+      if (!w) return false;
+      const ranges = typeof w[0] === 'number' ? [w] : w;
+      return ranges.some(r => r[0] <= nowMonth && nowMonth <= r[1]);
+    });
+    const momentum = tracked.filter(t => t.weeks.size >= 5)
+      .map(t => ({ name: t.card.name, id: label(t.card), color: colour(t.card), n: t.weeks.size }))
+      .sort((a, b) => b.n - a.n).slice(0, 12);
+    const inertia = building.filter(i => !seen[keyOf(i)] || seen[keyOf(i)].weeks.size <= 1)
+      .map(i => ({ name: i.name, id: label(i), color: colour(i), n: (seen[keyOf(i)] ? seen[keyOf(i)].weeks.size : 0) }))
+      .sort((a, b) => a.n - b.n).slice(0, 12);
+
+    // 3. Concentration: who and what the quarter leaned on.
+    const byLead = {};
+    (plan.initiatives || []).forEach(i => {
+      const who = i.leads && i.leads.product;
+      if (!who || who === 'TBC') return;
+      (byLead[who] = byLead[who] || []).push(i);
+    });
+    const leads = Object.keys(byLead).map(name => ({ name, n: byLead[name].length }))
+      .sort((a, b) => b.n - a.n).slice(0, 11);
+    const byTeam = {};
+    sections.forEach(sec => {
+      const team = clean(sec.heading).split(' · ')[0];
+      byTeam[team] = (byTeam[team] || 0) + (sec.delivery || []).length;
+    });
+    const teamLoad = Object.keys(byTeam).map(name => ({ name, n: byTeam[name] }))
+      .sort((a, b) => b.n - a.n).slice(0, 11);
+
+    // 4. Funding exposure: what is building without the investment committee behind it.
+    const POD = plan.meta.podWeekGbp * plan.meta.weeksPerMonth;
+    const months = i => {
+      const w = 'buildWindow' in i ? i.buildWindow : null;
+      if (!w) return 0;
+      const ranges = typeof w[0] === 'number' ? [w] : w;
+      return ranges.reduce((n, r) => n + (r[1] - r[0] + 1), 0);
+    };
+    const unapprovedBuilding = building.filter(i => !i.approved);
+    const exposure = unapprovedBuilding.map(i => ({
+      name: i.name, id: label(i), color: colour(i), value: money(months(i) * POD), raw: months(i) * POD,
+    })).sort((a, b) => b.raw - a.raw).slice(0, 12);
+    const groupOf = i => (laneOf[i.lane] ? laneOf[i.lane].group : '');
+    const byGroup = {};
+    unapprovedBuilding.forEach(i => {
+      const g = groupOf(i);
+      (byGroup[g] = byGroup[g] || { n: 0, cost: 0 }).n += 1;
+      byGroup[g].cost += months(i) * POD;
+    });
+    const exposureGroups = (plan.portfolios || []).filter(g => byGroup[g.key])
+      .map(g => ({ name: g.label, color: g.color, n: byGroup[g.key].n, value: money(byGroup[g.key].cost), raw: byGroup[g.key].cost }))
+      .sort((a, b) => b.raw - a.raw);
+    const exposureTotal = money(unapprovedBuilding.reduce((n, i) => n + months(i) * POD, 0));
+    const approvedTotal = money(building.filter(i => i.approved).reduce((n, i) => n + months(i) * POD, 0));
+
+    // 5. Work with no initiative behind it, week after week.
+    const unlinked = {};
+    const recurring = {};
+    sections.forEach(sec => {
+      const team = clean(sec.heading).split(' · ')[0];
+      (sec.delivery || []).forEach(d => {
+        const ids = String(d.label || '').match(/EP-\d+/g) || [];
+        if (ids.length || cardOf[d.title]) return;
+        unlinked[team] = (unlinked[team] || 0) + 1;
+        const title = clean(d.title);
+        if (!title) return;
+        const key = title.toLowerCase();
+        (recurring[key] = recurring[key] || { title, team, weeks: new Set() }).weeks.add(sec.week);
+      });
+    });
+    const offPlan = Object.keys(unlinked).map(name => ({ name, n: unlinked[name] }))
+      .sort((a, b) => b.n - a.n).slice(0, 12);
+    const returning = Object.values(recurring).filter(r => r.weeks.size >= 3)
+      .map(r => ({ name: r.title, meta: r.team + ' · ' + r.weeks.size + ' weeks', n: r.weeks.size, color: 'var(--qs-450)' }))
+      .sort((a, b) => b.n - a.n).slice(0, 12);
+    const offPlanTotal = Object.values(unlinked).reduce((a, b) => a + b, 0);
+    const linkedTotal = sections.reduce((n, s) => n + (s.delivery || []).length, 0);
+
+    const eyebrow = (report.label || 'Patterns') + ' · ' + (report.dates || '');
+    const generated = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const footer = 'Generated ' + generated + ' from ' + (report.source || 'the weekly reports') + ' · internal use';
+    const pct = n => Math.round(n * 100) + '%';
+
+    // The recommendations are read off the patterns above, not written by hand.
+    const recs = [
+      persistent.length && {
+        head: 'Close the standing risks, or accept them in writing',
+        text: persistent.length + ' initiatives have carried a risk in two or more separate weeks, led by ' +
+          persistent.slice(0, 3).map(r => r.name).join(', ') + '. A risk that survives a quarter of weekly reporting is not being managed by the report; give each one an owner and a date, or record it as accepted.',
+      },
+      inertia.length && {
+        head: 'Reconcile the plan with what is actually moving',
+        text: inertia.length + ' initiatives are inside their build window but have appeared in at most one weekly report — ' +
+          inertia.slice(0, 3).map(r => r.name).join(', ') + '. Either the work has not started, or it is not being reported. Both are worth knowing before the next committee.',
+      },
+      unapprovedBuilding.length && {
+        head: 'Put the unapproved build in front of the investment committee',
+        text: unapprovedBuilding.length + ' initiatives are in build without approval, carrying ' + exposureTotal +
+          ' of pod cost against ' + approvedTotal + ' approved. This is spend already in motion; approve it, stop it, or stage it.',
+      },
+      offPlanTotal && {
+        head: 'Name the off-plan work',
+        text: offPlanTotal + ' of ' + linkedTotal + ' delivery items across the quarter (' + pct(offPlanTotal / Math.max(1, linkedTotal)) +
+          ') could not be tied to an initiative, concentrated in ' + offPlan.slice(0, 2).map(t => t.name).join(' and ') +
+          '. Give the recurring ones an initiative number so the plan reflects the real workload.',
+      },
+      leads.length && {
+        head: 'Spread the single points of ownership',
+        text: leads[0].name + ' carries ' + leads[0].n + ' initiatives and ' + leads[1].name + ' ' + leads[1].n +
+          '. The quarter leans on a handful of people; succession for those two is the cheapest resilience available.',
+      },
+      momentum.length && {
+        head: 'Protect what has momentum',
+        text: momentum.length + ' initiatives reported in five or more weeks, led by ' + momentum.slice(0, 3).map(r => r.name).join(', ') +
+          '. These are the ones with real cadence — guard their teams from reallocation before the quarter closes.',
+      },
+    ].filter(Boolean);
+
+    const slides = [];
+    slides.push({
+      kind: 'patternCover', eyebrow, title: report.label, kicker: '',
+      coverTitle: report.label, coverTitle2: 'Patterns',
+      lead: 'What the weekly reports say when read together, rather than one week at a time. Every figure on the pages that follow is counted from the reports themselves.',
+      glance: 'Recommendations',
+      rows: recs.slice(0, 6).map((r, n) => ({ n: n + 1, head: r.head, text: r.text })),
+      footer,
+    });
+    slides.push({ kind: 'toc', eyebrow, title: 'Table of contents', kicker: '', sub: report.dates || '', rows: [], footer });
+    slides.push({
+      kind: 'recs', eyebrow, title: 'Recommendations', kicker: recs.length + ' actions',
+      sub: 'Read across weeks ' + weeks[0] + ' to ' + weeks[weeks.length - 1] + ', ' + weeks.length + ' published reports',
+      rows: recs.map((r, n) => ({ n: n + 1, head: r.head, text: r.text })), toc: 'Recommendations', footer,
+    });
+    slides.push({
+      kind: 'pattern', eyebrow, title: 'Persistent risks', kicker: persistent.length + ' standing', sub: 'Raised in two or more weeks',
+      lead: 'A risk that keeps coming back is a decision that has not been taken. These carried across the quarter, newest wording shown.',
+      rows: persistent.map(r => ({ name: r.name, meta: r.id + ' · weeks ' + r.weeks.join(', '), color: r.color, text: r.latest })),
+      toc: 'Persistent risks', footer,
+    });
+    slides.push({
+      kind: 'twoLists', eyebrow, title: 'Momentum and inertia', kicker: momentum.length + ' vs ' + inertia.length,
+      lead: 'Counted as the number of separate weekly reports an initiative appeared in. On the right, initiatives inside their build window that the reports have barely mentioned.',
+      leftTitle: 'Momentum · reported in five weeks or more',
+      rightTitle: 'Inertia · in build, silent',
+      left: momentum.map(r => ({ name: r.name, meta: r.id + ' · ' + r.n + ' weeks', color: r.color })),
+      right: inertia.map(r => ({ name: r.name, meta: r.id + ' · ' + (r.n ? r.n + ' week' : 'no updates'), color: r.color })),
+      toc: 'Momentum and inertia', footer,
+    });
+    slides.push({
+      kind: 'twoLists', eyebrow, title: 'Concentration', kicker: 'Where the quarter leans',
+      lead: 'Who the plan depends on, and which teams carry the reported delivery. Both are counted from the plan and the reports, not from headcount.',
+      leftTitle: 'Initiatives per product lead',
+      rightTitle: 'Delivery items reported per team',
+      left: leads.map(r => ({ name: r.name, meta: r.n + ' initiatives', color: 'var(--qs-600)' })),
+      right: teamLoad.map(r => ({ name: r.name, meta: r.n + ' items', color: 'var(--qs-450)' })),
+      toc: 'Concentration', footer,
+    });
+    slides.push({
+      kind: 'twoLists', eyebrow, title: 'Funding exposure', kicker: exposureTotal + ' unapproved',
+      lead: unapprovedBuilding.length + ' initiatives are building now without investment approval, carrying ' + exposureTotal +
+        ' of pod cost against ' + approvedTotal + ' that has it.',
+      leftTitle: 'Unapproved build by portfolio',
+      rightTitle: 'Largest unapproved commitments',
+      left: exposureGroups.map(r => ({ name: r.name, meta: r.n + ' · ' + r.value, color: r.color })),
+      right: exposure.map(r => ({ name: r.name, meta: r.id + ' · ' + r.value, color: r.color })),
+      toc: 'Funding exposure', footer,
+    });
+    slides.push({
+      kind: 'twoLists', eyebrow, title: 'Work off the plan', kicker: pct(offPlanTotal / Math.max(1, linkedTotal)) + ' unlinked',
+      lead: offPlanTotal + ' of ' + linkedTotal + ' delivery items across the quarter could not be tied to an initiative. Where the same item comes back week after week, the plan is missing a line.',
+      leftTitle: 'Unlinked delivery by team',
+      rightTitle: 'The same work, three weeks or more',
+      left: offPlan.map(r => ({ name: r.name, meta: r.n + ' items', color: 'var(--qs-450)' })),
+      right: returning,
+      toc: 'Work off the plan', footer,
+    });
+
+    const prod = this.heatmap('lines');
+    const ai = this.heatmap('ai');
+    slides.push({
+      kind: 'heatmap', eyebrow, title: 'Engineering activity', kicker: 'Last 24 months', sub: 'Illustrative',
+      panels: [
+        { title: 'Productivity Heatmap', span: prod.span, lead: 'Lines of code committed a day.',
+          months: prod.months, rows: prod.rows, legendLabel: 'Lines of code',
+          legend: [['None', 0], ['<600', 1], ['600–1,200', 2], ['1,200–2,000', 3], ['2,000+', 4]].map(([l, n]) => ({ label: l, bg: prod.scale[n] })) },
+        { title: 'AI Code Intensity', span: ai.span, lead: 'Share of committed code written by AI.',
+          months: ai.months, rows: ai.rows, legendLabel: 'AI share',
+          legend: [['<4%', 0], ['4–15%', 1], ['15–28%', 2], ['28–42%', 3], ['42%+', 4]].map(([l, n]) => ({ label: l, bg: ai.scale[n] })) },
+      ],
+      note: 'Days down, months across · sample data', toc: 'Engineering activity', footer,
+    });
+
+    const toc = slides.find(x => x.kind === 'toc');
+    toc.rows = slides.map((x, n) => (x.toc ? { label: x.toc, page: n + 1, color: x.color || 'var(--qs-350)' } : null)).filter(Boolean);
+    return slides;
+  }
+
+  // ---- The deck for a week. The initiative is the primary dimension: every update is filed under
+  // the portfolio its initiative number belongs to, with the team noted beside it.
+  slides() {
+    const plan = this.plan();
+    const week = this.currentWeek();
+    const reports = (plan.weekly || {}).reports || [];
+    const report = reports.find(r => r.week === week) || { week, dates: '', source: '' };
+    if (report.kind === 'patterns') {
+      return this.patternSlides(report).map((s, n) => ({
+        ...s,
+        hasDot: !!s.color,
+        isHeatmap: s.kind === 'heatmap', isToc: s.kind === 'toc', isGantt: false,
+        isSection: false, isCover: false, isPatternCover: s.kind === 'patternCover', isExec: false,
+        hasGantt: false, noGantt: false,
+        isUpdates: false, isBrief: false,
+        isRecs: s.kind === 'recs', isPattern: s.kind === 'pattern', isTwoLists: s.kind === 'twoLists',
+        plain: s.kind === 'patternCover' ? 'yes' : '',
+        chromeDisplay: s.kind === 'patternCover' ? 'none' : 'flex',
+        page: (n + 1) + ' / ' + this.patternSlides(report).length,
+      }));
+    }
+    const sections = (plan.teamUpdates.sections || []).filter(s => s.week === week);
+    const entries = (plan.updates.entries || []).filter(e => e.week === week);
+
+    const laneOf = {}; (plan.lanes || []).forEach(l => { laneOf[l.key] = l; });
+    const portfolio = {}; (plan.portfolios || []).forEach(g => { portfolio[g.key] = g; });
+    const cardOf = {};
+    (plan.initiatives || []).forEach(i => (i.ids.length ? i.ids : [i.name]).forEach(k => { cardOf[k] = i; }));
+    const teamName = {}; (plan.teams || []).forEach(t => { teamName[t.id] = t.short || t.name; });
+    const groupOf = card => (card && laneOf[card.lane] ? laneOf[card.lane].group : null);
+    const clean = t => String(t || '').replace(/\s+/g, ' ').trim();
+
+    // Everything reported this week lands on an initiative. Work that cannot be linked to one goes
+    // to Other Updates rather than being dropped.
+    const noise = t => !t || /^(none|no major|no apparent|nothing|n\/a|decisions?: *none|blockers?: *none)/i.test(t.trim());
+    const sentences = text => String(text || '').replace(/\s+/g, ' ').trim()
+      .split(/(?<=[.!?])\s+/).map(x => x.trim()).filter(Boolean);
+    // One paragraph: unique sentences, in the order they arrived, cut at a sentence end.
+    const paragraph = (chunks, limit) => {
+      const seen = new Set();
+      const out = [];
+      chunks.flatMap(sentences).forEach(line => {
+        const key = line.toLowerCase().replace(/[^a-z0-9 ]/g, '').slice(0, 60);
+        if (!key || seen.has(key) || noise(line)) return;
+        seen.add(key);
+        out.push(/[.!?]$/.test(line) ? line : line + '.');
+      });
+      let text = '';
+      for (const line of out) {
+        if (text && (text + ' ' + line).length > (limit || 470)) break;
+        text = text ? text + ' ' + line : line;
+      }
+      return text;
+    };
+
+    const work = {};
+    const touch = (card, team) => {
+      const key = card.ids.length ? card.ids[0] : card.name;
+      const rec = work[key] || (work[key] = { card, teams: [], chunks: [], risks: [] });
+      if (team && rec.teams.indexOf(team) < 0) rec.teams.push(team);
+      return rec;
+    };
+    entries.forEach(e => {
+      (e.epics || []).forEach(k => {
+        const card = cardOf[k];
+        if (!card) return;
+        const text = clean(e.text || '');
+        const named = /^([A-Z][\w&/ .()-]{1,28}):\s/.exec(text);
+        const rec = touch(card, clean(e.team || (named ? named[1] : '')));
+        const body = named ? text.slice(named[0].length) : text;
+        if (e.kind === 'risk') rec.risks.push(body);
+        else rec.chunks.push(body);
+      });
+    });
+
+    // Delivery items and highlights from the team sections, mapped the same way.
+    const other = {};                  // portfolio key → team name → the lines that named no initiative
+    const sectionHighlights = {};      // portfolio key → the headline from each team that worked in it
+    const sectionRisks = {};           // portfolio key → the risks and decisions those teams raised
+    const teamPortfolio = {};
+    (plan.teams || []).forEach(t => { if (t.portfolio) teamPortfolio[t.id] = t.portfolio; });
+    sections.forEach(sec => {
+      const team = clean(sec.heading || '').split(' · ')[0];
+      // Every reporting team belongs to a portfolio, so its unlinked work lands in that portfolio's
+      // update pages beside the initiatives it worked on.
+      const home = [].concat(sec.team).map(t => teamPortfolio[t]).find(Boolean) || '';
+      const spare = text => {
+        if (noise(text)) return;
+        const bucket = (other[home] = other[home] || {});
+        (bucket[team] = bucket[team] || []).push(text);
+      };
+      const groups = new Set();
+      (sec.delivery || []).forEach(d => {
+        const ids = String(d.label || '').match(/EP-\d+/g) || [];
+        const card = ids.length ? cardOf[ids[0]] : cardOf[d.title];
+        const body = [d.text, (d.bullets || [])[0]].filter(Boolean).join(' ');
+        if (card) {
+          const rec = touch(card, team);
+          rec.chunks.push(body);
+          const g = laneOf[card.lane] ? laneOf[card.lane].group : null;
+          if (g) groups.add(g);
+        } else {
+          spare([d.title, body].filter(Boolean).join(': '));
+        }
+      });
+      const headline = sentences(sec.highlights || '').slice(0, 2).join(' ');
+      if (headline) groups.forEach(g => { (sectionHighlights[g] = sectionHighlights[g] || []).push(headline); });
+      // A team's risks belong to the portfolios it worked in, and show on that portfolio's summary.
+      (sec.risks || []).map(clean).filter(r => !noise(r)).forEach(r => {
+        const row = { name: team, id: '', text: r };
+        if (groups.size) groups.forEach(g => { (sectionRisks[g] = sectionRisks[g] || []).push(row); });
+        else if (home) { (sectionRisks[home] = sectionRisks[home] || []).push(row); }
+        else spare('Risk: ' + r);
+      });
+    });
+
+    const laneGroup = card => (card && laneOf[card.lane] ? laneOf[card.lane].group : null);
+    const stageName = card => (plan.stages || [])[card.stage] || '';
+    const blockFor = w => {
+      const risk = paragraph(w.risks, 360);
+      return {
+        name: w.card.name,
+        sub: [w.card.ids.length ? w.card.ids[0].replace(/^EP-/, 'IN-') : 'No initiative number',
+          w.teams.join(' · '), stageName(w.card)].filter(Boolean).join(' · '),
+        // The update runs long enough to be worth reading on its own: there is no executive summary
+        // page in front of it any more.
+        text: paragraph(w.chunks, 820),
+        risk, hasRisk: !!risk,
+      };
+    };
+
+    // Rough height of a block in a column, so a page is filled before a new one starts.
+    const cost = b => 54 + Math.ceil((b.text || '').length / 52) * 17 +
+      (b.risk ? 16 + Math.ceil(b.risk.length / 54) * 16 : 0);
+    const pages = (blocks, budget) => {
+      const out = [];
+      let page = [];
+      let used = 0;
+      blocks.forEach(b => {
+        const c = cost(b);
+        if (page.length && used + c > (budget || 1100)) { out.push(page); page = []; used = 0; }
+        page.push(b);
+        used += c;
+      });
+      if (page.length) out.push(page);
+      return out;
+    };
+
+    const parts = (plan.portfolios || []).map(g => {
+      const items = Object.keys(work).map(k => work[k]).filter(w => laneGroup(w.card) === g.key)
+        .sort((a, b) => (a.card.tier || 9) - (b.card.tier || 9) || a.card.name.localeCompare(b.card.name));
+      const stages = (plan.stages || []).map(name => ({
+        name, n: items.filter(w => stageName(w.card) === name).length,
+      })).filter(x => x.n).map(x => x.n + ' ' + x.name.toLowerCase());
+      const risks = items.flatMap(w => w.risks.map(text => ({
+        name: w.card.name,
+        id: w.card.ids.length ? w.card.ids[0].replace(/^EP-/, 'IN-') : '',
+        text: paragraph([text], 260),
+      }))).concat((sectionRisks[g.key] || []).map(r => ({ ...r, text: paragraph([r.text], 260) })))
+        .filter(r => r.text).slice(0, 7);
+      // Risks a team raised that are not pinned to one initiative become their own block, so they
+      // stay in the update pages rather than on a summary page of their own.
+      const teamRisks = {};
+      (sectionRisks[g.key] || []).forEach(r => { (teamRisks[r.name] = teamRisks[r.name] || []).push(r.text); });
+      const loose = other[g.key] || {};
+      const looseBlocks = Object.keys(loose).map(team => ({
+        name: team, sub: 'Other work · not linked to an initiative',
+        text: paragraph(loose[team], 760), risk: '', hasRisk: false,
+      })).filter(b => b.text);
+      const riskBlocks = Object.keys(teamRisks).map(team => {
+        const risk = paragraph(teamRisks[team], 520);
+        return { name: team, sub: 'Risks and decisions', text: '', risk, hasRisk: !!risk };
+      }).filter(b => b.risk);
+      // Two short paragraphs for the cover: what came out of the week, and what needs a decision.
+      const named = items.slice(0, 3).map(w => w.card.name).join(', ');
+      const outcomes = paragraph([
+        items.length
+          ? items.length + ' initiatives moved, led by ' + named + '.'
+          : Object.keys(loose).slice(0, 3).join(', ') + ' reported work with no initiative behind it.',
+      ].concat(sectionHighlights[g.key] || [])
+        .concat(items.slice(0, 3).map(w => w.chunks[0] || ''))
+        .concat(items.length ? [] : Object.values(loose).map(v => v[0] || '')), 300);
+      const riskNote = risks.length
+        ? paragraph(risks.map(r => (r.id ? r.name + ': ' : '') + r.text), 260)
+        : 'Nothing raised this week.';
+      return {
+        group: g, items, stages, risks, outcomes, riskNote,
+        blocks: items.map(blockFor).concat(looseBlocks, riskBlocks),
+      };
+    }).filter(part => part.blocks.length);
+
+    // Only work from a team with no portfolio of its own still falls to the back.
+    const strays = other[''] || {};
+    const otherBlocks = Object.keys(strays).map(team => ({
+      name: team, sub: 'Other updates · not linked to an initiative',
+      text: paragraph(strays[team], 760), risk: '', hasRisk: false,
+    })).filter(b => b.text);
+
+    const eyebrow = 'Week ' + week + ' · ' + (report.dates || '');
+    const generated = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    const footer = 'Generated ' + generated + ' from ' + (report.source || 'the QS weekly tech report') + ' · internal use';
+    const slides = [];
+
+    // 1. Cover, in the delivery plan's cover style.
+    slides.push({
+      kind: 'cover', eyebrow, title: 'Week ' + week, kicker: '', sub: report.dates || '',
+      coverTitle: 'Week ' + week, coverTitle2: 'Delivery Report',
+      lead: 'What moved this week, initiative by initiative, with the delivery schedule it sits in.',
+      stats: [
+        { value: Object.keys(work).length + '', label: 'Initiatives moved' },
+        { value: parts.length + '', label: 'Portfolios' },
+        { value: sections.length + '', label: 'Teams reporting' },
+      ],
+      blocks: parts.map(p => ({
+        label: p.group.label, color: p.group.color,
+        count: p.items.length
+          ? p.items.length + (p.items.length === 1 ? ' initiative' : ' initiatives')
+          : p.blocks.length + (p.blocks.length === 1 ? ' update' : ' updates'),
+        outcomes: p.outcomes,
+        risks: p.riskNote,
+      })),
+      legend: (plan.portfolios || []).map(g => ({ label: g.label, color: g.color })),
+      footer,
+    });
+
+    // 2. Table of contents, filled in once the deck is built.
+    slides.push({ kind: 'toc', eyebrow, title: 'Table of contents', kicker: '', sub: report.dates || '', rows: [], footer });
+
+    // 4. The delivery schedule the week sits in, two columns.
+    slides.push({
+      kind: 'gantt', eyebrow, title: 'Delivery schedule', kicker: (plan.initiatives || []).length + ' initiatives',
+      sub: 'The whole plan', ganttKey: 'all', ganttColumns: '2', toc: 'Delivery schedule', footer,
+    });
+
+    // 5. Productivity and AI intensity, side by side.
+    const prod = this.heatmap('lines');
+    const ai = this.heatmap('ai');
+    slides.push({
+      kind: 'heatmap', eyebrow, title: 'Engineering activity', kicker: 'Last 24 months', sub: 'Illustrative',
+      panels: [
+        {
+          title: 'Productivity Heatmap', span: prod.span,
+          lead: 'Lines of code committed a day.',
+          months: prod.months, rows: prod.rows,
+          legendLabel: 'Lines of code',
+          legend: [['None', 0], ['<600', 1], ['600–1,200', 2], ['1,200–2,000', 3], ['2,000+', 4]]
+            .map(([label, n]) => ({ label, bg: prod.scale[n] })),
+        },
+        {
+          title: 'AI Code Intensity', span: ai.span,
+          lead: 'Share of committed code written by AI.',
+          months: ai.months, rows: ai.rows,
+          legendLabel: 'AI share',
+          legend: [['<4%', 0], ['4–15%', 1], ['15–28%', 2], ['28–42%', 3], ['42%+', 4]]
+            .map(([label, n]) => ({ label, bg: ai.scale[n] })),
+        },
+      ],
+      note: 'Days down, months across · sample data',
+      toc: 'Engineering activity', footer,
+    });
+
+    // Then each portfolio: its section cover, then its updates initiative by initiative.
+    parts.forEach((part, n) => {
+      slides.push({
+        kind: 'section', eyebrow, title: part.group.label, color: part.group.color,
+        kicker: part.items.length
+          ? part.items.length + (part.items.length === 1 ? ' initiative' : ' initiatives')
+          : part.blocks.length + ' updates',
+        sub: report.dates || '',
+        sectionNo: 'Section ' + (n + 1) + ' of ' + parts.length,
+        count: part.items.length
+          ? part.items.length + (part.items.length === 1 ? ' initiative reported' : ' initiatives reported')
+          : part.blocks.length + (part.blocks.length === 1 ? ' team reported' : ' teams reported'),
+        stats: part.stages,
+        ganttKey: part.group.key, ganttColumns: '1',
+        toc: part.group.label,
+        footer,
+      });
+      const grouped = pages(part.blocks);
+      grouped.forEach((items, i) => {
+        slides.push({
+          kind: 'updates', eyebrow, title: part.group.label, color: part.group.color,
+          kicker: part.items.length
+            ? part.items.length + (part.items.length === 1 ? ' initiative' : ' initiatives')
+            : part.blocks.length + ' updates',
+          sub: grouped.length > 1 ? 'updates ' + (i + 1) + ' of ' + grouped.length : 'updates',
+          items,
+          footer,
+        });
+      });
+    });
+
+    // Anything that could not be linked to an initiative, with its own section cover.
+    if (otherBlocks.length) {
+      slides.push({
+        kind: 'section', eyebrow, title: 'Other updates', color: 'var(--qs-450)',
+        kicker: otherBlocks.length + (otherBlocks.length === 1 ? ' team' : ' teams'),
+        sub: report.dates || '',
+        sectionNo: 'Section ' + (parts.length + 1) + ' of ' + (parts.length + 1),
+        count: 'Work not linked to an initiative',
+        stats: otherBlocks.slice(0, 6).map(b => b.name),
+        summary: paragraph(otherBlocks.map(b => b.text), 1100),
+        summaryLabel: 'What this section covers',
+        toc: 'Other updates',
+        footer,
+      });
+      pages(otherBlocks).forEach((items, i, all) => {
+        slides.push({
+          kind: 'updates', eyebrow, title: 'Other updates', color: 'var(--qs-450)',
+          kicker: otherBlocks.length + (otherBlocks.length === 1 ? ' team' : ' teams'),
+          sub: all.length > 1 ? 'updates ' + (i + 1) + ' of ' + all.length : 'updates',
+          items,
+          footer,
+        });
+      });
+    }
+
+    // The contents page lists every slide that asked to be listed.
+    const toc = slides.find(x => x.kind === 'toc');
+    toc.rows = slides.map((x, n) => (x.toc ? { label: x.toc, page: n + 1, color: x.color || '' } : null)).filter(Boolean);
+
+    return slides.map((s, n) => ({
+      ...s,
+      hasDot: !!s.color,
+      isHeatmap: s.kind === 'heatmap', isToc: s.kind === 'toc', isGantt: s.kind === 'gantt',
+      isSection: s.kind === 'section', isCover: s.kind === 'cover', isExec: s.kind === 'exec',
+      hasGantt: s.kind === 'section' && !!s.ganttKey, noGantt: s.kind === 'section' && !s.ganttKey,
+      isUpdates: s.kind === 'updates', isBrief: false,
+      isRecs: false, isPattern: false, isTwoLists: false, isPatternCover: false,
+      plain: s.kind === 'cover' ? 'yes' : '',
+      chromeDisplay: s.kind === 'cover' ? 'none' : 'flex',
+      page: (n + 1) + ' / ' + slides.length,
+    }));
+  }
+
+  renderVals() {
+    const plan = this.plan();
+    const reports = (plan.weekly || {}).reports || [];
+    const week = this.currentWeek();
+    const report = reports.find(r => r.week === week) || {};
+    const name = report.label || ('Week ' + week);
+    const slides = this.slides();
+    const index = Math.min(this.state.slide, Math.max(0, slides.length - 1));
+    const slide = slides[index] || { stats: [], rows: [], items: [], risks: [] };
+
+    return {
+      weekLabel: this.weekLabel(),
+      docTitle: (plan.meta || {}).title || '2027 Data and Engineering Delivery Plan',
+      pdfHref: report.pdf || '#',
+      pdfName: 'QS ' + name + ' report.pdf',
+      pdfLabel: 'Download ' + name + ' (16:9 PDF)',
+      pdfTitle: 'Built with npm run build:weekly ' + (report.id || week),
+      deckLabel: slides.length + (slides.length === 1 ? ' slide' : ' slides') + ' · 16:9',
+      slideLabel: 'Slide ' + (index + 1) + ' of ' + slides.length,
+      slideCount: slides.length,
+      slideIndex: index,
+      deckGantts: slides.filter(x => x.isGantt || x.hasGantt).length,
+      slide,
+      thumbs: slides.map((s, n) => ({
+        n: n + 1, title: s.title,
+        bg: n === index ? 'var(--qs-ink)' : 'var(--qs-page)',
+        fg: n === index ? '#fff' : 'var(--qs-600)',
+        pick: () => this.setState({ slide: n }),
+      })),
+      prev: () => this.step(-1),
+      next: () => this.step(1),
+      prevFg: index === 0 ? 'var(--qs-300)' : 'var(--qs-ink)',
+      nextFg: index >= slides.length - 1 ? 'var(--qs-300)' : 'var(--qs-ink)',
+      reports: reports.map(r => ({
+        week: r.week, dates: r.dates, pdf: r.pdf,
+        title: r.label || ('Week ' + r.week),
+        onFlag: r.week === week ? 'yes' : 'no',
+        bg: r.week === week ? 'var(--qs-ink)' : 'transparent',
+        fg: r.week === week ? '#fff' : 'var(--qs-ink)',
+        pdfBg: r.week === week ? 'rgba(255,255,255,0.18)' : 'var(--qs-page)',
+        pdfFg: r.week === week ? '#fff' : 'var(--qs-600)',
+        pick: () => this.setState({ week: r.week, slide: 0 }),
+        stop: e => { if (e && e.stopPropagation) e.stopPropagation(); },
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

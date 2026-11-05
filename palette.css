@@ -1,0 +1,23 @@
+/* PP Telegraf, licensed to QS and stored with the project. Only the Regular weight was supplied,
+   so heavier text is synthesised; drop in the real Medium/Bold files here when we have them. */
+@font-face {
+  font-family: 'PP Telegraf';
+  src: url('fonts/PPTelegraf-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* QS priority palette, shared by index.html and the transformation page.
+   Hues are from the palette sheet; the greys are eyeballed from it. Swap in exact brand values here. */
+:root {
+  --qs-amber:#F5A100; --qs-yellow:#FFC800; --qs-orange:#F05A00; --qs-lightblue:#6FB3E8; --qs-blue:#2273C9;
+  --qs-mint:#6FCFA9; --qs-teal:#00957F; --qs-lilac:#B47FD0; --qs-pink:#F4B5CF; --qs-red:#E0301E;
+  --qs-150:#E8EAEB; --qs-250:#CDD1D3; --qs-300:#C4C9CB; --qs-400:#A8AEB1; --qs-450:#9FA5A8;
+  --qs-550:#71797E; --qs-600:#5A6166; --qs-650:#50585D; --qs-750:#3A444A;
+  --qs-ink:#1A272E; --qs-ink-on-fill:#141E24; --qs-page:#F2F5F6;
+  /* Traffic lights. Deliberately deeper than the portfolio hues so a signal never reads as a brand colour. */
+  --qs-signal-red:#B3261E; --qs-signal-orange:#D96C00; --qs-signal-green:#0E7C4A; --qs-signal-none:#C4C9CB;
+  /* Deployed. Deeper than the University Services light blue so a live system never reads as a portfolio. */
+  --qs-signal-blue:#15589B;
+}

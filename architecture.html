@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QS Platform Architecture</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="palette.css" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#F2F5F6; }
+  * { box-sizing:border-box; }
+  a { color:#2068C0; text-decoration:none; }
+  a:hover { color:#1B559E; }
+
+  /* Layer colours. Portfolio hues from palette.css, each with a tint light enough
+     to carry white cards on top of it. */
+  .canvas {
+    --chan:var(--qs-300);  --chan-bg:#fff;
+    --web:var(--qs-250);   --web-bg:#fff;
+    --qas:var(--qs-300);   --qas-bg:var(--qs-page);  --qas-tile:#fff;  --qas-line:var(--qs-250);
+    --cer:var(--qs-300);   --cer-bg:var(--qs-page);
+    --hub:var(--qs-300);   --hub-bg:var(--qs-page);
+    --card-h:84px;
+  }
+
+  /* ── 16:9 board ───────────────────────────────────────────────────────────
+     The board is a responsive 16:9 frame. The canvas inside is laid out at a
+     virtual width the logic tunes until its natural height hits 16:9, then
+     scaled to the frame — so the diagram always fills the slide exactly. */
+  .board { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;
+           background:#fff; border-radius:12px; box-shadow:0 1px 2px rgba(26,39,46,0.07); }
+  .canvas { position:absolute; left:0; top:0; transform-origin:top left;
+            padding:26px 30px 24px; display:flex; flex-direction:column; row-gap:8px;
+            font-family:'PP Telegraf','Manrope',system-ui,sans-serif; color:var(--qs-ink); }
+
+  /* ── bands and panels ─────────────────────────────────────────────────── */
+  .band { display:flex; align-items:center; gap:16px; border-radius:10px; padding:8px 14px; }
+  .panel { border-radius:11px; padding:11px 14px 12px; display:flex; flex-direction:column; }
+  .l-chan { background:var(--chan-bg); border:2px dashed var(--chan); }
+  .l-web  { background:var(--web-bg);  border:2px solid var(--web); }
+  .l-qas  { background:var(--qas-bg);  border:2px solid var(--qas); }
+  .l-cer  { background:var(--cer-bg);  border:2px solid var(--cer); }
+  .l-hub  { background:var(--hub-bg);  border:2px solid var(--hub); }
+  .l-flat { background:var(--qs-page); border:2px solid var(--qs-250); }
+  .dash   { background:var(--qs-page); border:2px dashed var(--qs-300); border-radius:11px; }
+
+  .lead { flex:0 0 150px; }
+  /* The channel leads sit beside two rows of chips: wide enough that the label
+     wraps once and the note holds one line, so the band stays chip-height. */
+  .lead-chan { flex:0 0 184px; }
+  .lead-chan .lbl  { font-size:12px; letter-spacing:1.1px; }
+  .lead-chan .desc { font-size:13px; margin-top:3px; }
+  .lbl  { font-size:12.5px; font-weight:800; letter-spacing:1.8px; text-transform:uppercase; }
+  .desc { font-size:14px; font-weight:600; color:var(--qs-650); margin-top:2px; line-height:1.3; }
+  .ttl  { font-size:20px; font-weight:800; letter-spacing:-0.2px; white-space:nowrap; }
+  .note { font-size:14.5px; font-weight:600; color:var(--qs-650); }
+
+  /* ── tokens, cards, tiles ─────────────────────────────────────────────── */
+  .toks { display:flex; flex-wrap:wrap; gap:5px; }
+  .tok  { background:#fff; border-radius:7px; padding:4px 9px; font-size:13.5px; font-weight:700; line-height:1.2; }
+  .tok-flat { background:#fff; border:1px solid var(--qs-150); border-radius:9px; padding:6px 11px; font-size:14.5px; font-weight:700; }
+
+  .card { background:#fff; border:2px solid var(--sc, var(--qs-150)); border-radius:11px; padding:9px 11px; }
+  .card .t { font-size:16.5px; font-weight:800; line-height:1.2; }
+  .card .d { font-size:13.5px; font-weight:600; color:var(--qs-600); margin-top:2px; line-height:1.25; }
+  /* ── portfolio status ─────────────────────────────────────────────────────
+     The base is monochrome so that colour can mean one thing only: what we
+     intend to do with a product in 2027. Each product wears its status as a
+     tag at the top and an outline around it; anything without a status keeps
+     the neutral grey edge. Rebuild means a change of architecture, Improve
+     means work within the one it has. */
+  .s-incubate    { --sc:var(--qs-lilac);  --sct:var(--qs-ink); }
+  .s-grow        { --sc:var(--qs-teal);   --sct:#fff; }
+  .s-improve     { --sc:var(--qs-blue);   --sct:#fff; }
+  .s-maintain    { --sc:var(--qs-400);    --sct:var(--qs-ink); }
+  .s-rebuild     { --sc:var(--qs-orange); --sct:#fff; }
+  .s-consolidate { --sc:var(--qs-yellow); --sct:var(--qs-ink); }
+  .s-sunset      { --sc:var(--qs-red);    --sct:#fff; }
+  .stag { display:inline-block; width:fit-content; align-self:flex-start;
+          margin-bottom:4px; padding:2px 6px; border-radius:3px;
+          font-size:8.5px; font-weight:800; letter-spacing:0.9px; text-transform:uppercase;
+          line-height:1.3; background:var(--sc); color:var(--sct); }
+  .stag:empty { display:none; }
+
+  /* Every product tile reads the same way: status, name, then one line on what it is. */
+  .tile { background:var(--qas-tile); border:2px solid var(--sc, var(--qs-250)); border-radius:9px;
+          padding:6px 9px; display:flex; flex-direction:column; justify-content:flex-start; }
+  .tile .t { font-size:14px; font-weight:700; line-height:1.2; }
+  .tile .n { font-size:12.5px; font-weight:600; color:var(--qs-600); margin-top:2px;
+             line-height:1.25; text-wrap:pretty; }
+  .tile.off { background:var(--qs-150); border-color:var(--qs-250); }
+  .tile.off .t, .tile.off .n { color:var(--qs-450); }
+
+  .lift { transition:transform .16s, box-shadow .16s; }
+  .lift:hover { transform:translateY(-3px) scale(1.03); box-shadow:0 10px 22px rgba(26,39,46,0.18);
+                position:relative; z-index:3; }
+
+  .g6 { display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px; flex:1 1 auto; }
+
+  /* ── the QAS row's module ─────────────────────────────────────────────────
+     Every product card in this row is the same width W and the same height, and
+     a group is simply n cards wide: Sector Intelligence 3, Future Students 2,
+     UBS 1, Non QAS Native 1. Each level works W out from its own width rather
+     than inheriting it, since a percentage in a custom property resolves against
+     whichever element reads it. With card gap 7, column padding 11, column gap
+     11, panel padding 14, row gap 14, dash padding 13 and a 2px border on each
+     of the two outer panels, the row comes to 7W + 192. */
+  .qrow   { display:grid; gap:14px; align-items:stretch;
+            grid-template-columns:minmax(0,1fr) calc((100% - 192px) / 7 + 30px); }
+  .qcols  { display:grid; gap:11px; align-items:start;
+            grid-template-columns:calc((100% - 116px) / 2 + 43px)
+                                  calc((100% - 116px) / 3 + 29px)
+                                  calc((100% - 116px) / 6 + 22px); }
+  .qcol   { background:#fff; border-radius:9px; padding:9px 11px 10px; display:flex; flex-direction:column; }
+  .qcol-h { font-size:16px; font-weight:800; }
+  .qcol-d { font-size:13.5px; font-weight:600; color:var(--qs-600); margin-top:2px; }
+
+  .cards { display:grid; gap:7px; grid-auto-rows:var(--card-h); }
+  .c1 { grid-template-columns:minmax(0,1fr); }
+  .c2 { grid-template-columns:repeat(2, calc((100% - 7px) / 2)); }
+  .c3 { grid-template-columns:repeat(3, calc((100% - 21px) / 3)); justify-content:space-between; }
+  /* The shared services strip is six slots: its heading takes the first, so the
+     five apps land on the same module as every other card in the row. */
+  .c6 { grid-template-columns:repeat(6, calc((100% - 94px) / 6)); justify-content:space-between; }
+  /* The recruitment band runs the full width under the columns: heading, then
+     five cards, on the same six-slot module as the shared services strip. */
+  /* Read top to bottom, then left to right. */
+  .c2.down { grid-auto-flow:column; grid-template-rows:repeat(3, var(--card-h)); }
+
+  /* Sector Intelligence carries three named groups on that same module. The
+     outline is drawn with outline rather than border so it costs no width. */
+  .si    { display:grid; gap:14px;
+           grid-template-columns:calc(2 * (100% - 21px) / 3 + 7px) calc((100% - 21px) / 3); }
+  .grp   { display:flex; flex-direction:column; border-radius:8px;
+           outline:1.25px solid var(--qs-250); outline-offset:5px; }
+  .grp-wide { grid-column:1 / -1; }
+  .grp-l { font-size:10.5px; font-weight:800; letter-spacing:1.3px; text-transform:uppercase;
+           color:var(--qs-550); margin-bottom:5px; }
+
+  .tag { display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:0.9px;
+         text-transform:uppercase; color:#fff; background:var(--qs-600); border-radius:999px; padding:3px 9px; }
+  .tag.hyp { background:var(--qs-red); }
+  .arrow { display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; }
+
+  /* ── cluster highlighting ─────────────────────────────────────────────────
+     Cards that belong to a cross-platform cluster carry a coloured ring. Hover
+     any one of them and the ring on every card in that cluster turns into a
+     dashed outline travelling clockwise, so you can trace a product across
+     channels, apps and data without anything moving on the board. */
+  /* Colour is spoken for, so a cluster shows itself only while hovered, in ink. */
+  [data-g] { cursor:default; position:relative; z-index:1; }
+  [data-g]::after {
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    opacity:0; transition:opacity .18s; background-repeat:no-repeat;
+    background-image:repeating-linear-gradient(90deg, var(--gc) 0 9px, transparent 9px 18px),
+                     repeating-linear-gradient(90deg, var(--gc) 0 9px, transparent 9px 18px),
+                     repeating-linear-gradient(0deg,  var(--gc) 0 9px, transparent 9px 18px),
+                     repeating-linear-gradient(0deg,  var(--gc) 0 9px, transparent 9px 18px);
+    background-size:100% 2.5px, 100% 2.5px, 2.5px 100%, 2.5px 100%;
+    background-position:0 0, 0 100%, 0 0, 100% 0;
+  }
+  /* Top runs right, bottom left, left up, right down: one clockwise turn. */
+  @keyframes dash-travel { to { background-position:18px 0, -18px 100%, 0 -18px, 100% 18px; } }
+  .g-answers, .g-career, .g-portals, .g-admissions, .g-insights { --gc:var(--qs-ink); }
+  .board[data-pop="answers"]    [data-g="answers"],
+  .board[data-pop="career"]     [data-g="career"],
+  .board[data-pop="portals"]    [data-g="portals"],
+  .board[data-pop="admissions"] [data-g="admissions"],
+  .board[data-pop="insights"]   [data-g="insights"] { z-index:6; }
+  .board[data-pop="answers"]    [data-g="answers"]::after,
+  .board[data-pop="career"]     [data-g="career"]::after,
+  .board[data-pop="portals"]    [data-g="portals"]::after,
+  .board[data-pop="admissions"] [data-g="admissions"]::after,
+  .board[data-pop="insights"]   [data-g="insights"]::after {
+    opacity:1; animation:dash-travel .75s linear infinite;
+  }
+
+  /* ── MyQS band ────────────────────────────────────────────────────────── */
+  .myqs { background:var(--qs-750); color:#fff; border-radius:10px; padding:9px 18px;
+          display:flex; align-items:center; gap:18px; }
+  .myqs .sub { font-size:14.5px; font-weight:600; color:rgba(255,255,255,0.78); margin-top:3px; line-height:1.4; }
+  .myqs .chip { flex:0 0 auto; font-size:12px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+                background:rgba(255,255,255,0.18); border-radius:999px; padding:5px 11px; }
+  .myqs .frame { flex:1 1 auto; min-width:0; border:2px solid rgba(255,255,255,0.85); border-radius:8px; padding:8px 11px 10px; }
+  /* The curated views carry their note inline, so the frame stays one row tall
+     and the space goes to the app cards on the right. */
+  .myqs .inner { background:#fff; color:var(--qs-ink); border:1.5px solid #fff; border-radius:10px;
+                 padding:7px 12px; display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+  .myqs .inner .t { font-size:16px; font-weight:800; }
+  .myqs .inner .d { font-size:13.5px; font-weight:600; color:var(--qs-600); }
+  .sqs { display:flex; gap:8px; flex:0 0 auto; }
+  .sq  { flex:0 0 168px; display:flex; flex-direction:column; justify-content:flex-start;
+         background:#fff; color:var(--qs-ink); border:2px solid var(--sc, var(--qs-250)); border-radius:10px;
+         padding:8px 11px; }
+  .sq .t { font-size:15px; font-weight:800; line-height:1.2; }
+  .sq .d { font-size:12.5px; font-weight:600; color:var(--qs-600); margin-top:3px;
+           line-height:1.25; text-wrap:pretty; }
+
+  /* ── Auth band ────────────────────────────────────────────────────────── */
+  .auth { background:var(--qs-ink); color:#fff; border-radius:10px; padding:9px 18px;
+          display:flex; align-items:center; justify-content:space-between; gap:18px; }
+  .auth .note { color:var(--qs-300); font-size:15px; }
+  .auth .chip { flex:0 0 auto; font-size:12.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase;
+                background:rgba(255,255,255,0.14); border-radius:999px; padding:6px 12px; }
+
+  .bars { display:grid; grid-template-columns:repeat(10, 1fr); gap:3px; margin-top:8px; }
+  .bars span { height:9px; border-radius:2px; background:var(--qs-300); }
+  .bars.one span { background:var(--qs-ink); }
+  /* Not a count, unlike the Aurora instances: a mark that reads as a stack. */
+  .bars.stack span { background:var(--qs-400); }
+  .bars.src { grid-template-columns:repeat(12, 1fr); gap:3px; margin-top:7px; }
+  .bars.src span { height:9px; background:var(--qs-250); }
+
+  /* The PDF build prints this page as a single 16:9 sheet. The board keeps its
+     own 16:9 and takes whatever height the header and footnote leave. */
+  @media print {
+    @page { size:16.667in 9.375in; margin:0; }
+    /* The whole page shares the board's column, so the heading and the footnote
+       line up with the diagram rather than running wider than it. */
+    /* The page background runs the full sheet, and the column is the board's own,
+       so the heading lines up with the diagram rather than running wider than it. */
+    .arch-page { min-height:0 !important; height:900px; width:1400px; margin:0 auto;
+                 padding:24px 0 14px !important; }  /* beats its inline padding */
+    .board { width:100%; margin:0; }
+    [data-download-architecture] { display:none !important; }  /* beats its inline display */
+  }
+</style>
+</helmet>
+
+<div class="arch-page" style="font-family:'PP Telegraf','Manrope',system-ui,sans-serif; background:#F2F5F6; color:#1A272E; padding:30px 34px 22px; min-height:100vh; display:flex; flex-direction:column;">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:32px; flex-wrap:wrap;">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <a href="index.html" title="Back to the delivery plan"><img src="uploads/qs-logo.png" alt="QS" style="width:46px; height:46px; object-fit:contain; display:block;"></a>
+      <div>
+        <div style="font-size:31px; font-weight:800; letter-spacing:-0.6px; line-height:1.1;">QS Emerging Platform Architecture</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap;">
+      <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+        <div style="font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:#8A99A3; margin-right:2px;">Status</div>
+        <sc-for list="{{ layers }}" as="l" hint-placeholder-count="6">
+          <div style="flex:0 0 auto; white-space:nowrap; display:flex; align-items:center; gap:6px; background:#fff; border-radius:999px; padding:5px 10px; font-size:11px; font-weight:700; color:var(--qs-600);">
+            <span style="width:8px; height:8px; border-radius:3px; background:{{ l.bg }};"></span>{{ l.label }}
+          </div>
+        </sc-for>
+      </div>
+      <a data-download-architecture href="reports/qs-platform-architecture.pdf" download="QS Platform Architecture.pdf" title="Download this page as a 16:9 PDF" style="flex:0 0 auto; display:flex; align-items:center; gap:7px; background:var(--qs-ink); color:#fff; border-radius:999px; padding:7px 14px; font-size:11.5px; font-weight:800; white-space:nowrap; transition:opacity .14s;" style-hover="opacity:0.86;">
+        <span style="font-size:12px; line-height:1;">&darr;</span>PDF
+      </a>
+    </div>
+  </div>
+
+  <div class="board" data-pop="{{ pop }}" ref="{{ boardRef }}" style="margin-top:20px;">
+  <div class="canvas" ref="{{ canvasRef }}" style="width:{{ cw }}; min-height:{{ ch }}; transform:scale({{ scale }});">
+
+    <!-- Channels -->
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:10px;">
+      <div class="band l-chan g-answers" data-g="answers" onmouseenter="{{ popAnswers }}" onmouseleave="{{ unpop }}">
+        <div class="lead lead-chan">
+          <div class="lbl">Search &amp; Answer Engines</div>
+          <div class="desc">Answering student questions.</div>
+        </div>
+        <div class="toks">
+          <sc-for list="{{ engines }}" as="e" hint-placeholder-count="13"><div class="tok">{{ e }}</div></sc-for>
+        </div>
+      </div>
+      <div class="band l-chan">
+        <div class="lead lead-chan">
+          <div class="lbl">Socials</div>
+          <div class="desc">Clicks land on QS sites.</div>
+        </div>
+        <div class="toks">
+          <sc-for list="{{ socials }}" as="s" hint-placeholder-count="19"><div class="tok">{{ s }}</div></sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lead generation -->
+    <div class="band l-web">
+      <div class="lead">
+        <div class="lbl">Lead generation</div>
+        <div class="desc">QS-owned sites. Graduate users into MyQS.</div>
+      </div>
+      <div class="g6">
+        <sc-for list="{{ leadgen }}" as="c" hint-placeholder-count="6">
+          <div class="card {{ c.cls }}" data-g="{{ c.gk }}" onmouseenter="{{ c.enter }}" onmouseleave="{{ c.leave }}">
+            <div class="stag">{{ c.tag }}</div><div class="t">{{ c.name }}</div><div class="d">{{ c.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- MyQS -->
+    <div class="myqs">
+      <div style="flex:0 0 268px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="font-size:22px; font-weight:800; letter-spacing:-0.3px;">MyQS</div>
+          <div class="chip">QS Auth</div>
+        </div>
+        <div class="sub">One logged in experience and portal for your QS experience, MyQS</div>
+      </div>
+      <div class="frame">
+        <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
+          <div style="font-size:15.5px; font-weight:800; white-space:nowrap;">Hyper Personalised MyQS</div>
+          <div style="font-size:13.5px; font-weight:600; color:rgba(255,255,255,0.72);">Assembled per user from profile and behaviour</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px;">
+          <div class="inner lift"><div class="t">B2B Curated MyQS</div><div class="d">Institution and partner view</div></div>
+          <div class="inner lift"><div class="t">B2C Curated MyQS</div><div class="d">Student and candidate view</div></div>
+        </div>
+      </div>
+      <div class="sqs">
+        <sc-for list="{{ myqsApps }}" as="a" hint-placeholder-count="5">
+          <div class="sq lift {{ a.cls }}"><div class="stag">{{ a.tag }}</div><div class="t">{{ a.name }}</div><div class="d">{{ a.note }}</div></div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- QAS applications + non-native -->
+    <div class="qrow">
+      <div class="panel l-qas" style="min-width:0;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:14px;">
+          <div style="display:flex; align-items:baseline; gap:12px;">
+            <div class="ttl">QAS Applications</div>
+            <div class="note">QS Application System. The universe of apps reached through MyQS.</div>
+          </div>
+          <div class="lbl" style="letter-spacing:1.6px; white-space:nowrap;">Three product columns, one shared services row</div>
+        </div>
+
+        <div class="qcols" style="margin-top:9px;">
+          <div class="qcol">
+            <div class="qcol-h">Rankings, Reputation &amp; Partnerships</div>
+            <div class="qcol-d">Sector intelligence sold to institutions</div>
+            <div class="si" style="margin-top:9px;">
+              <div class="grp">
+                <div class="grp-l">Rankings</div>
+                <div class="cards c2 down">
+                  <sc-for list="{{ siRankings }}" as="a" hint-placeholder-count="6">
+                    <div class="tile {{ a.cls }}" data-g="{{ a.gk }}" onmouseenter="{{ a.enter }}" onmouseleave="{{ a.leave }}">
+                      <div class="stag">{{ a.tag }}</div><div class="t">{{ a.name }}</div><div class="n">{{ a.note }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div class="grp">
+                <div class="grp-l">Reputation &amp; Partnerships</div>
+                <div class="cards c1">
+                  <sc-for list="{{ siReputation }}" as="a" hint-placeholder-count="3">
+                    <div class="tile {{ a.cls }}" data-g="{{ a.gk }}" onmouseenter="{{ a.enter }}" onmouseleave="{{ a.leave }}">
+                      <div class="stag">{{ a.tag }}</div><div class="t">{{ a.name }}</div><div class="n">{{ a.note }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <sc-for list="{{ columns }}" as="col" hint-placeholder-count="2">
+            <div class="qcol">
+              <div class="qcol-h">{{ col.name }}</div>
+              <div class="qcol-d">{{ col.desc }}</div>
+              <div class="cards {{ col.cards }}" style="margin-top:9px;">
+                <sc-for list="{{ col.apps }}" as="a" hint-placeholder-count="6">
+                  <div class="tile {{ a.cls }}" data-g="{{ a.gk }}" onmouseenter="{{ a.enter }}" onmouseleave="{{ a.leave }}">
+                    <div class="stag">{{ a.tag }}</div><div class="t">{{ a.name }}</div><div class="n">{{ a.note }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+
+          <div class="qcol" style="grid-column:1 / -1;">
+            <div class="cards c6">
+              <div>
+                <div class="qcol-h">Recruitment, Skills &amp; Innovation</div>
+                <div class="qcol-d">Demand, outcomes and curriculum signal</div>
+              </div>
+              <sc-for list="{{ recruitment }}" as="a" hint-placeholder-count="5">
+                <div class="tile {{ a.cls }}" data-g="{{ a.gk }}" onmouseenter="{{ a.enter }}" onmouseleave="{{ a.leave }}">
+                  <div class="stag">{{ a.tag }}</div><div class="t">{{ a.name }}</div><div class="n">{{ a.note }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#fff; border-radius:9px; padding:9px 11px 10px; margin-top:9px; flex:0 0 auto;">
+          <div class="cards c6">
+            <div>
+              <div class="qcol-h">QAS Administration</div>
+              <div class="qcol-d">Shared across all three columns</div>
+            </div>
+            <sc-for list="{{ admin }}" as="a" hint-placeholder-count="5">
+              <div class="tile {{ a.cls }}"><div class="stag">{{ a.tag }}</div><div class="t">{{ a.name }}</div><div class="n">{{ a.note }}</div></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash" style="display:flex; flex-direction:column; padding:13px;">
+        <div class="qcol-h" style="color:var(--qs-550);">Non QAS Native</div>
+        <div class="qcol-d">Own authentication. Not yet in the ecosystem.</div>
+        <div class="cards c1" style="margin-top:9px;">
+          <sc-for list="{{ nonqas }}" as="c" hint-placeholder-count="3">
+            <div class="card {{ c.cls }}" data-g="{{ c.gk }}" onmouseenter="{{ c.enter }}" onmouseleave="{{ c.leave }}" style="border-radius:12px;">
+              <div class="stag">{{ c.tag }}</div><div class="t">{{ c.name }}</div><div class="d">{{ c.desc }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth -->
+    <div class="auth">
+      <div style="display:flex; align-items:baseline; gap:14px;">
+        <div style="font-size:22px; font-weight:800; letter-spacing:-0.3px;">QS Auth</div>
+        <div class="note">Sits under everything above. Every app request and every customer API, MCP or Super Graph call clears identity and entitlement here before touching data.</div>
+      </div>
+      <div class="chip">AI-era data protection</div>
+    </div>
+
+    <!-- Data layer -->
+    <!-- One card width across the whole row: Access Points and the Agentic Surface
+         are one card wide, Cerebrum three, HubSpot four. A dashed box costs 30px of
+         chrome, the Cerebrum panel 32px plus two 8px gaps, the HubSpot panel 32px
+         plus its arrow and gaps — so the row comes to 9 cards plus 382px. -->
+    <div style="display:grid; align-items:stretch; --dw:calc((100% - 382px) / 9);
+                grid-template-columns:calc(var(--dw) + 30px) 32px calc(var(--dw) + 30px) 32px
+                                      calc(3 * var(--dw) + 48px) 112px calc(4 * var(--dw) + 98px);">
+      <div class="dash" style="display:flex; flex-direction:column; gap:7px; padding:12px 13px 13px; border-color:var(--qs-ink);">
+        <div class="lbl" style="letter-spacing:1.6px; color:var(--qs-600);">Access Points</div>
+        <div style="font-size:13.5px; font-weight:600; color:var(--qs-600); line-height:1.35; text-wrap:pretty;">Customers enter from the side, through QS Auth, straight to the data.</div>
+        <sc-for list="{{ access }}" as="a" hint-placeholder-count="3">
+          <div class="lift {{ a.cls }}" style="background:#fff; border:2px solid var(--sc, var(--qs-150)); border-radius:9px; padding:8px 11px;">
+            <div class="stag">{{ a.tag }}</div>
+            <div style="font-size:15px; font-weight:800;">{{ a.name }}</div>
+            <div style="font-size:13px; font-weight:600; color:var(--qs-600); margin-top:2px;">{{ a.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div class="arrow">&rarr;</div>
+
+      <div class="dash" style="display:flex; flex-direction:column; gap:7px; padding:12px 13px 13px;">
+        <div class="lbl" style="letter-spacing:1.6px; color:var(--qs-600);">Agentic Surface</div>
+        <div style="font-size:13.5px; font-weight:600; color:var(--qs-600); line-height:1.35; text-wrap:pretty;">Context over the governed data, so an agent can use it safely.</div>
+        <sc-for list="{{ agentic }}" as="a" hint-placeholder-count="3">
+          <div class="lift {{ a.cls }}" style="background:#fff; border:2px solid var(--sc, var(--qs-150)); border-radius:9px; padding:8px 11px;">
+            <div class="stag">{{ a.tag }}</div>
+            <div style="font-size:15px; font-weight:800;">{{ a.name }}</div>
+            <div style="font-size:13px; font-weight:600; color:var(--qs-600); margin-top:2px;">{{ a.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div class="arrow">&rarr;</div>
+
+      <div class="panel l-cer">
+        <div style="display:flex; align-items:baseline; gap:12px;">
+          <div class="ttl">Cerebrum</div>
+          <div class="note">Governed data platform. Source of truth for rankings, institutions and analytics.</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px; margin-top:10px; flex:1 1 auto; align-items:stretch;">
+          <sc-for list="{{ cerebrum }}" as="c" hint-placeholder-count="3">
+            <div class="card lift {{ c.cls }}" style="border-radius:10px; padding:10px 11px; display:flex; flex-direction:column;">
+              <div class="stag">{{ c.tag }}</div>
+              <div class="t" style="font-size:15px;">{{ c.name }}</div><div class="d" style="font-size:13px;">{{ c.desc }}</div>
+              <sc-if value="{{ c.sources }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:auto; padding-top:10px;">
+                  <div class="lbl" style="font-size:10px; letter-spacing:1.2px; color:var(--qs-550);">Raw sources</div>
+                  <div style="font-size:12px; font-weight:600; color:var(--qs-600); margin-top:3px; line-height:1.35; text-wrap:pretty;">Submissions, surveys, bibliometrics, product analytics and third-party feeds, governed on the way in.</div>
+                  <div class="bars src"><sc-for list="{{ sourceMarks }}" as="m" hint-placeholder-count="60"><span></span></sc-for></div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:0 8px;">
+        <div style="font-size:32px; font-weight:800; line-height:1;">&#8644;</div>
+        <div class="lbl" style="font-size:12px; letter-spacing:1.2px; color:var(--qs-600); text-align:center; line-height:1.4;">Defined Data Exchange</div>
+      </div>
+
+      <div class="panel l-hub">
+        <div style="display:flex; align-items:baseline; gap:12px;">
+          <div class="ttl">HubSpot and MarTech Stack</div>
+          <div class="note">Engagement and CRM. Four kinds of instance.</div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(2, calc((100% - 66px) / 4)) 34px repeat(2, calc((100% - 66px) / 4)); grid-template-rows:minmax(0,1fr) minmax(0,1fr); gap:8px; margin-top:10px; align-items:stretch; flex:1 1 auto;">
+          <div style="grid-column:4 / 6; grid-row:1; background:#fff; border:2px dashed var(--hub); border-radius:10px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <div class="s-incubate"><div class="stag">Incubate</div><div class="t" style="font-size:15px; font-weight:800;">Counsellor &amp; Agent Portal</div><div style="font-size:13px; font-weight:600; color:var(--qs-600); margin-top:2px;">HubSpot Pages with membership login. Serves QSA and Aurora instances.</div></div>
+            <div class="tag hyp" style="flex:0 0 auto;">Hypothesis</div>
+          </div>
+          <div class="card lift s-improve" style="grid-column:1; grid-row:1; border-radius:10px; padding:10px 11px;"><div class="stag">Improve</div><div class="t" style="font-size:15px;">B2B MarTech Stack</div><div class="d" style="font-size:13px;">Events tech and related B2B lead gen tooling</div>
+            <div class="bars stack"><sc-for list="{{ stackBars }}" as="b" hint-placeholder-count="10"><span></span></sc-for></div>
+          </div>
+          <div class="card lift s-improve" style="grid-column:1; grid-row:2; border-radius:10px; padding:10px 11px;"><div class="stag">Improve</div><div class="t" style="font-size:15px;">B2B HubSpot</div><div class="d" style="font-size:13px;">Institutional sales and marketing</div></div>
+          <div class="card lift s-improve" style="grid-column:2; grid-row:1; border-radius:10px; padding:10px 11px;"><div class="stag">Improve</div><div class="t" style="font-size:15px;">B2C MarTech Stack</div><div class="d" style="font-size:13px;">Analytics, consent, engagement and lead scoring tooling</div>
+            <div class="bars stack"><sc-for list="{{ stackBars }}" as="b" hint-placeholder-count="10"><span></span></sc-for></div>
+          </div>
+          <div class="card lift s-improve" style="grid-column:2; grid-row:2; border-radius:10px; padding:10px 11px;"><div class="stag">Improve</div><div class="t" style="font-size:15px;">B2C HubSpot</div><div class="d" style="font-size:13px;">Active student pool: nurture, scoring, routing. Fed from MyQS.</div></div>
+          <div class="arrow" style="grid-column:3; grid-row:2; font-size:22px;">&rarr;</div>
+          <div class="card s-grow" style="grid-column:4; grid-row:2; border-radius:10px; padding:10px 11px;">
+            <div class="stag">Grow</div><div class="t" style="font-size:15px;">QSA HubSpot</div><div class="d" style="font-size:13px;">Apply instance, synced from B2C. Replaces Appian.</div>
+            <div class="bars one"><span></span></div>
+          </div>
+          <div class="card s-maintain" style="grid-column:5; grid-row:2; border-radius:10px; padding:10px 11px;">
+            <div class="stag">Maintain</div><div class="t" style="font-size:15px;">Aurora HubSpots</div><div class="d" style="font-size:13px;">Constellation of ~40 university instances. QSA is one of them.</div>
+            <div class="bars"><sc-for list="{{ auroraBars }}" as="b" hint-placeholder-count="40"><span></span></sc-for></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1600,&quot;height&quot;:1000}}">
+class Component extends DCLogic {
+  // cw is the canvas's virtual layout width. fit() tunes it until the canvas's
+  // natural height is 16:9, then scales the whole thing into the board, so the
+  // diagram fills a 16:9 slide at any viewport width without reflowing on zoom.
+  state = { cw: 1920, scale: 1, pop: '' };
+  boardRef = React.createRef();
+  canvasRef = React.createRef();
+
+  componentDidMount() {
+    this.fit();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.fit());
+    this.ro = new ResizeObserver(() => this.rescale());
+    if (this.boardRef.current) this.ro.observe(this.boardRef.current);
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+
+  rescale() {
+    const b = this.boardRef.current;
+    if (b) this.setState({ scale: b.clientWidth / this.state.cw });
+  }
+
+  // The canvas lays out at a virtual width and is then scaled into the 16:9 board,
+  // so the smallest width whose content still fits 16:9 is the one that renders the
+  // diagram largest. Height falls in steps as the width grows and text stops
+  // wrapping, which makes chasing the ratio directly oscillate between two widths —
+  // so walk out to a width that fits, then bisect back to the tightest one. The
+  // measurements are taken straight off the element, so the whole search is one pass.
+  fit() {
+    const el = this.canvasRef.current;
+    if (!el) return;
+    const heldW = el.style.width, heldH = el.style.minHeight;
+    el.style.minHeight = '0px';
+    const fits = (w) => {
+      el.style.width = w + 'px';
+      const h = el.offsetHeight;
+      return h > 0 && h * 16 / 9 <= w;
+    };
+
+    let lo = 800, hi = 800;
+    while (hi < 6000 && !fits(hi)) { lo = hi; hi = Math.round(hi * 1.25); }
+    while (hi - lo > 6) {
+      const mid = Math.round((lo + hi) / 2);
+      if (fits(mid)) hi = mid; else lo = mid;
+    }
+
+    el.style.width = heldW;
+    el.style.minHeight = heldH;
+    this.setState({ cw: hi }, () => this.rescale());
+  }
+
+  renderVals() {
+    const pop = (k) => () => this.setState({ pop: k });
+    const unpop = () => this.setState({ pop: '' });
+    // name, note, cluster key, portfolio status. The status paints the card's
+    // outline and its tag; the cluster key links it to its siblings on hover.
+    const STATUS = {
+      incubate: 'Incubate', grow: 'Grow', improve: 'Improve', maintain: 'Maintain',
+      rebuild: 'Rebuild', consolidate: 'Consolidate', sunset: 'Sunset',
+    };
+    const cls = (g, s) => (g ? 'g-' + g : 'lift') + (s ? ' s-' + s : '');
+    const t = (name, note, g, s) => ({
+      name, note: note || '', cls: cls(g, s), gk: g || '', tag: STATUS[s] || '',
+      enter: g ? pop(g) : unpop, leave: unpop,
+    });
+    const c = (name, desc, g, s) => ({
+      name, desc, cls: cls(g, s), gk: g || '', tag: STATUS[s] || '',
+      enter: g ? pop(g) : unpop, leave: unpop,
+    });
+
+    return {
+      boardRef: this.boardRef, canvasRef: this.canvasRef,
+      cw: this.state.cw + 'px', ch: Math.round(this.state.cw * 9 / 16) + 'px',
+      scale: this.state.scale, pop: this.state.pop,
+      popAnswers: pop('answers'), unpop,
+
+      layers: [
+        { label: 'Incubate', bg: 'var(--qs-lilac)' },
+        { label: 'Grow', bg: 'var(--qs-teal)' },
+        { label: 'Improve', bg: 'var(--qs-blue)' },
+        { label: 'Maintain', bg: 'var(--qs-400)' },
+        { label: 'Rebuild', bg: 'var(--qs-orange)' },
+        { label: 'Consolidate', bg: 'var(--qs-yellow)' },
+        { label: 'Sunset', bg: 'var(--qs-red)' },
+      ],
+
+      engines: ['ChatGPT', 'Gemini', 'Claude', 'Perplexity', 'Copilot', 'Meta AI', 'Grok', 'AI Overviews', 'DeepSeek', 'Doubao', 'Qwen', 'Kimi', 'Ernie'],
+      socials: ['TikTok', 'Instagram', 'YouTube', 'Facebook', 'LinkedIn', 'X', 'Snapchat', 'Reddit', 'Quora', 'Pinterest', 'WhatsApp', 'Telegram', 'WeChat', 'Weibo', 'RED', 'Douyin', 'Bilibili', 'Zhihu', 'Google / Baidu'],
+
+      leadgen: [
+        c('QS.com', 'Corporate and institutional front door', '', 'maintain'),
+        c('B2B Lead Gen', 'HolonIQ, 1Mentor and related institutional lead gen sites', '', 'consolidate'),
+        c('TopUniversities.com', 'Rankings directory, course catalogue, largest student source', '', 'rebuild'),
+        c('TU China', 'Mandarin, China-hosted mini TU', '', 'rebuild'),
+        c('QS Career Match', 'New 1Mentor front end. Postgraduate and professional lead gen, absorbs Top MBA', 'career', 'rebuild'),
+        c('Answers', 'B2C and B2B answer seeding sites, written for search and answer engines to read', 'answers', 'incubate'),
+      ],
+
+      myqsApps: [
+        { name: 'Dashboards', note: 'The views a user owns, by role and entitlement', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'Analytics', note: 'Usage, performance and benchmarking over QS data', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'AI Chat', note: 'Answers questions over QS data. Reads Cerebrum', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'QS One', note: 'Membership tier. Grants embargoed access', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'Networks', note: 'Institution, partner and alumni communities', cls: 's-incubate', tag: STATUS.incubate },
+      ],
+
+      // Sector Intelligence, read top to bottom then left to right: rankings two
+      // cards wide, reputation down the third, skills across the foot.
+      siRankings: [
+        t('Big Picture / Factfiles', 'Per-institution profile and benchmark pack', '', 'improve'),
+        t('WUR', 'The flagship World University Rankings', '', 'maintain'),
+        t('Regional', 'Asia, Latin America, Europe, Arab region', '', 'maintain'),
+        t('Subject', 'Rankings by subject and faculty area', '', 'maintain'),
+        t('GME', 'Global MBA and business masters rankings', '', 'maintain'),
+        t('Sustainability', 'Sustainability ranking and its indicators', '', 'improve'),
+      ],
+      siReputation: [
+        t('Academic Reputation', 'Academic survey signal behind the rankings', '', 'maintain'),
+        t('Employer Reputation', 'Employer survey signal behind the rankings', '', 'maintain'),
+        t('Partnerships', 'Partner discovery and partnership management', 'admissions', 'incubate'),
+      ],
+      // Broken out of the column and run across the foot of the row.
+      recruitment: [
+        t('Student Insights, GSF, ISS', 'Student demand signal for recruitment', 'portals', 'incubate'),
+        t('Alumni Insights', 'Alumni outcomes and destinations', 'insights', 'incubate'),
+        t('LMI / Curriculum', 'Labour market data mapped to curriculum', 'insights', 'incubate'),
+        t('World Future Skills Index (WFSI)', 'Country-level future skills readiness', '', 'maintain'),
+        t('Innovation', 'Innovation ranking and its indicator set', '', 'maintain'),
+      ],
+
+      columns: [
+        {
+          name: 'Future Students', desc: 'Digital and events, student and university demand', cards: 'c2 down',
+          apps: [
+            t('MyLeads (Accord v2+)', 'Leads, campaigns and the Hub 2 replacement', 'portals', 'incubate'),
+            { name: 'Hub 2 \u2014 Deprecated', note: 'Retiring. Absorbed by MyLeads', cls: 'off s-sunset', gk: '', tag: STATUS.sunset, enter: unpop, leave: unpop },
+            t('Outreach', 'Event applications, bookings and their data', '', 'consolidate'),
+            t('D&E Productivity & Dashboards', 'Internal delivery and performance views', '', 'incubate'),
+            t('White Label Career Navigator', '1Mentor 2.0. Multi-tenant white label', 'career', 'grow'),
+            t('University Skills Portal', 'Institution backend for the white label front end', 'career', 'grow'),
+          ],
+        },
+        {
+          name: 'UBS', desc: 'University services, enrolment and apply', cards: 'c1',
+          apps: [
+            t('Uni Services Institution Portal', 'Aurora portal: documents, scoring, counsellor feedback', 'portals', 'incubate'),
+            t('UBS Productivity & Dashboards', 'Admin, reporting, data integrity and the client data API', '', 'incubate'),
+          ],
+        },
+      ],
+
+      admin: [
+        t('CX & Access Control App', 'Accounts, entitlements and support views', '', 'improve'),
+        t('QAS Cerebrum App', 'Ontology, governance and dataset administration', '', 'improve'),
+        t('Rankings Admin', 'Runs the rankings cycle through to publication', '', 'improve'),
+        t('Content Management', 'Editorial content across the QS sites and apps', '', 'incubate'),
+        t('Codex Data Collection', 'Single intake for rankings and evaluation submissions', '', 'grow'),
+      ],
+
+      nonqas: [
+        c('MoveIN', 'Admissions CRM', 'admissions', 'maintain'),
+        c('MoveON', 'International office platform', 'admissions', 'maintain'),
+        c('1Mentor', 'Career navigation, white label', '', 'maintain'),
+      ],
+
+      // What has to sit between governed data and an agent calling it: what the
+      // data means, what the agent may do, and whether the answer can be trusted.
+      agentic: [
+        { name: 'Semantic Models', desc: 'Entities, measures and how they relate', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'Skills', desc: 'Named tasks an agent can call, with guardrails', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'Grounding & Evaluation', desc: 'Answers cite governed data and are scored', cls: 's-incubate', tag: STATUS.incubate },
+      ],
+
+      access: [
+        { name: 'APIs', desc: 'Programmatic data access', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'MCP', desc: 'Agents and AI tools', cls: 's-incubate', tag: STATUS.incubate },
+        { name: 'Super Graph', desc: 'Federated queries', cls: 's-improve', tag: STATUS.improve },
+      ],
+
+      cerebrum: [
+        { name: 'QS Ontology', desc: 'Master and connected taxonomies and frameworks', cls: 's-improve', tag: STATUS.improve },
+        { name: 'Data Governance', desc: 'Lineage, quality, retention', sources: true, cls: 's-improve', tag: STATUS.improve },
+        { name: 'Master Cerebrum Dataset', desc: 'Governed, connected source of truth', cls: 's-improve', tag: STATUS.improve },
+      ],
+
+      // Symbolic fields, not counts, except the Aurora instances.
+      auroraBars: Array.from({ length: 40 }, (_, i) => i),
+      stackBars: Array.from({ length: 10 }, (_, i) => i),
+      sourceMarks: Array.from({ length: 60 }, (_, i) => i),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
